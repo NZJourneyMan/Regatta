@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>stranger things wall</title>
+    <link rel="stylesheet" type="text/css" href="/static/strange.css">
+</head>
+<body style="text-align: center">
+    <font size=30pt>
+        {% if msg %}
+            <p> Sending: {{ msg }} </p>
+            {% if qlen %}
+                <p style="color:  #e4e3e3"> You are number {{ qlen }} in the queue </p>
+            {% endif %}
+        {% else %}
+            <p> Nothing to send! </p>
+        {% endif %}
+            <form id="sending" action="/index" method="GET">
+                <input type="submit" value="Ok">
+            </form>
+            <br>
+    </font>
+</body>
+</html>
+

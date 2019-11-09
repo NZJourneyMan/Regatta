@@ -1,0 +1,36 @@
+body {
+    background: url("/static/strange-listria.png");
+    -moz-background-size: cover;
+	-webkit-background-size: cover;
+	background-size: cover;
+	background-position: top center !important;
+	background-repeat: no-repeat !important;
+	background-attachment: fixed;
+    background-color: #03030a;
+}
+
+p {
+    font-size: 30pt;
+    color: red;
+}
+
+input[type=text] {
+    width: 90%;
+    padding: 6px 6px;
+    box-sizing: border-box;
+    border: 3px solid black;
+    font-size: 30pt;
+    color: #b20000;
+    background-color: #e4e3e3;
+}
+
+input[type=submit] {
+    width: 200px;
+    height: 60px;
+    margin: 30px;
+    padding: 0px;
+    font-size: 30pt;
+    border-radius: 15px;
+    color: #b20000;
+    background-color: #e4e3e3;
+}
