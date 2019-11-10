@@ -1,1 +1,1 @@
-web: gunicorn regatta_web:app
+web: gunicorn --pythonpath lib,bin dswc_leaderboard:app

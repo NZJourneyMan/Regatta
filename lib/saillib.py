@@ -93,6 +93,9 @@ class Regatta(object):
                 maxBoats = len(res)
         return maxBoats + 1
 
+    def listRounds(self):
+        return list(self.rounds)
+
     '''
     The next section of methods use submitted race results that are passed as
         (tuple of crew names): place string (int or DNx string)

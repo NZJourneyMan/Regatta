@@ -1,17 +1,16 @@
 body {
-    background: url("/static/strange-listria.png");
+    background: url("/static/clip_sailboat.png");
     -moz-background-size: cover;
 	-webkit-background-size: cover;
 	background-size: cover;
-	background-position: top center !important;
+	background-position: center center !important;
 	background-repeat: no-repeat !important;
 	background-attachment: fixed;
-    background-color: #03030a;
 }
 
 p {
-    font-size: 30pt;
-    color: red;
+    font-size: 12pt;
+    color: black;
 }
 
 input[type=text] {
