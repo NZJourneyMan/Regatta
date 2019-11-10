@@ -1,1 +1,0 @@
-web: gunicorn flask/regatta_web:app
