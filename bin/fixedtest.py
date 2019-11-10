@@ -3,7 +3,7 @@
 import os, sys, json
 from pprint import pprint
 
-sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../flask/lib')))
+sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../lib')))
 print(sys.path[-1] + " " + __file__)
 
 from saillib import Regatta
