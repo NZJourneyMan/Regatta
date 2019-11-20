@@ -3,6 +3,7 @@
 import sys
 import os
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory, jsonify
+from flask_cors import CORS
 
 from saillib import Regatta
 from fixedtest import round1, round2, round3, round4, addRound
@@ -15,6 +16,7 @@ addRound(sRound, 'Round3', round3)
 addRound(sRound, 'Round4', round4)
 
 app = Flask(__name__)
+CORS(app)
 
 
 @app.route('/favicon.ico')
@@ -35,7 +37,7 @@ def redirect_index():
 
 
 # Boiler plate pages for 500, 404 and testing 500
-@app.route('/boom')
+@app.route('/boom', methods=['GET'])
 def boom():
 
     class Boom(Exception):
@@ -59,20 +61,20 @@ def do500(e):
 
 
 # API definitions
-@app.route('/api/v1.0/getRoundResult')
+@app.route('/api/v1.0/getRoundResult', methods=['GET'])
 def getRoundResult():
     seriesName = request.args.get('seriesName')
     roundName = request.args.get('roundName')
     return jsonify(sRound.getRoundResults(roundName))
 
 
-@app.route('/api/v1.0/getSeriesResult')
+@app.route('/api/v1.0/getSeriesResult', methods=['GET'])
 def getSeriesResult():
     seriesName = request.args.get('seriesName')
     return jsonify(sRound.getSeriesResults())
 
 
-@app.route('/api/v1.0/listRounds')
+@app.route('/api/v1.0/listRounds', methods=['GET'])
 def listRounds():
     seriesName = request.args.get('seriesName')
     return jsonify(sRound.listRounds())
