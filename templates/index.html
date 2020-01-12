@@ -1,11 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>DSWC Leader Board</title>
-    <link rel="stylesheet" type="text/css" href="/static/leaderboard.css">
-</head>
-<body style="text-align: center">
-</body>
+    <head>
+        <meta charset="UTF-8">
+        <title>DSWC Leaderboard</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <link rel="stylesheet" type="text/css" href="/static/leaderboard.css">
+
+        <!-- development version, includes helpful console warnings -->
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+        <!-- Load required Bootstrap and BootstrapVue CSS -->
+        <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css" />
+        <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.css" />
+
+        <!-- Load polyfills to support older browsers -->
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es2015%2CIntersectionObserver" crossorigin="anonymous"></script>
+
+        <!-- Load Vue followed by BootstrapVue -->
+        <script src="https://unpkg.com/vue@latest/dist/vue.min.js"></script>
+        <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.js"></script>
+
+    </head>
+
+    <body>
+        <h1>Autumnal Series Leaderboard</h1>
+        <div id="summary">
+            <b-table responsive striped hover sticky-header=90vh :fields="fields" :items="items"></b-table>
+        </div>
+        <!-- <h1>Rounds</h1>
+        <h2>Round 1</h2> -->
+        <script src="static/dswc_leaderboard.js"></script>
+    </body>
 </html>
 
