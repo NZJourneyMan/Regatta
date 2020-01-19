@@ -5,7 +5,7 @@ class Regatta(object):
     '''
     Data Structures:
     self.rounds = {
-        'Round name': 
+        Round_Name: 
             [ array of dicts
                 { 
                     'crew', (tuple of crew names),
@@ -20,6 +20,12 @@ class Regatta(object):
                     ]
                 }
             ]
+    }
+    self.roundIdx = {
+        Round_Name: {
+            (tuple of crew names): Array index in self.rounds
+        }
+
     }
     Notes: 
         1. DNS, DNF & DSQ so are scored as the number of boats in the *round* + 1
@@ -53,6 +59,8 @@ class Regatta(object):
     '''
 
     def getSeriesResults(self, summaryType='allRaces'):
+        if len(self.rounds) == 1:
+            return self.getRoundResults(list(self.rounds)[0])
         summary = Regatta(roundDiscardsType=self.seriesDiscardsType,
                           roundDiscardsNum=self.seriesDiscardsNum,
                           seriesDiscardsType=None,
@@ -60,7 +68,7 @@ class Regatta(object):
                           overRideDNC=self.maxSeriesPlaces())
         if summaryType == 'allRaces':
             allPeeps = self.getAllPeeps()
-            raceResultsBase = {person: 'DNC' for person in allPeeps}
+            raceResultsBase = {person: 'DNC' for person in allPeeps}  # Initially set everyone to DNC
             summary.addRound([{'crew': x, 'boatNum': None} for x in allPeeps], 'Summary')
             for roundName in self.rounds:
                 for raceNum in range(self.numRaces(roundName)):
@@ -127,7 +135,7 @@ class Regatta(object):
                 'discard': False,
                 'raceNum': raceNum,  # Note that this will be one higher than the array index
                 }
-            self.rounds[roundName][ self.roundIdx[crew] ]['races'].append(raceRec)
+            self.rounds[roundName][ self.roundIdx[roundName][crew] ]['races'].append(raceRec)
 
     def checkValidRace(self, roundName, results, allowDuplicates=False):
         '''
@@ -203,7 +211,7 @@ class Regatta(object):
                 'boatNum': boat['boatNum'],
                 'races': [],
             })
-            self.roundIdx[boat['crew']] = i
+            self.roundIdx[roundName][boat['crew']] = i
 
     def numRaces(self, roundName):
         roundResults = self.rounds[roundName]
@@ -263,26 +271,6 @@ class Regatta(object):
                                              race['raceNum'],
                                              boat['crew']))
 
-#         for crew, races in results.items():
-#             retResults[crew] = []
-#             for place in races:
-#                 if type(place) is int:
-#                     retResults[crew].append(place)
-#                 else:
-#                     if not place:
-#                         place = 'DNS'
-#                     place = place.upper()
-#                     if place in validDNX:
-#                         if place in ('DNC', 'C'):
-#                             if self.overRideDNC:
-#                                 retResults[crew].append(self.overRideDNC)
-#                             else:
-#                                 retResults[crew].append(self.maxSeriesPlaces())
-#                         else:
-#                             retResults[crew].append(self.maxRoundPlaces(roundName))
-#
-#         return retResults
-
     def maxCountBack(self, roundName):
         return self.maxSeriesPlaces() ** self.numRaces(roundName)
 
@@ -317,32 +305,8 @@ class Regatta(object):
         Calculate the overall score and place for each crew across each race in the round
         Return an array reverse sorted by score
         '''
-        overall_results = []
-
         self.setScore(roundName)
         return self.rounds[roundName]
-#         for crew, races in self.setDNX(self.rounds[roundName], roundName).items():
-#
-#             overall_results.append({
-#                 'crew': crew,
-#                 'score': score,
-#                 'points': points[0],
-#                 'races': races,
-#                 'races_orig': self.rounds[roundName][crew]
-#             })
-#         # Add in the position
-#         overall_results.sort(key=lambda v: v['score'], reverse=True)
-#         prevScore = 0
-#         prevPlace = 0
-#         for i, rec in enumerate(overall_results, start=1):
-#             if rec['score'] == prevScore:
-#                 rec['place'] = prevPlace
-#             else:
-#                 rec['place'] = i
-#             prevPlace = rec['place']
-#             prevScore = rec['score']
-#
-#         return overall_results
 
     def getAllCrews(self, roundName='_all_'):
         crews = set()
@@ -397,8 +361,6 @@ class Regatta(object):
         discardRaces.sort(key=lambda x: x['place'])  # sort by place, ascending
         flippedRaces = self.flipResults(discardRaces)  # Now flipped, descending order
         tot = self.racePlacesToInt(flippedRaces, self.maxSeriesPlaces())
-#         tot = self.racePlacesToInt(self.flipResults(roundName, sorted(discardRaces, key=lambda x: x['place'])),
-#                              self.maxSeriesPlaces())
         return tot
 
     def calcCBLastBest(self, roundName, races):
@@ -409,7 +371,6 @@ class Regatta(object):
         '''
         flippedRaces = self.flipResults(races)[::-1]  # Flip then reverse order
         tot = self.racePlacesToInt(flippedRaces, self.maxSeriesPlaces())
-#         tot = self.racePlacesToInt(self.flipResults(roundName, races)[::-1], self.maxSeriesPlaces())
         return tot
 
     def calcPoints(self, roundName, races):
@@ -422,7 +383,5 @@ class Regatta(object):
         flippedDiscardRaces = self.flipResults(discardRaces)
         loPoints = sum([x['place'] for x in discardRaces])
         hiPoints = sum([x['place'] for x in flippedDiscardRaces])
-#         adjTot = sum(self.flipResults(roundName, discardRaces))
-#         tot = sum(discardRaces)
         return loPoints, hiPoints
 

@@ -5,15 +5,32 @@ import os
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory, jsonify
 from flask_cors import CORS
 
+LIBDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), 'lib'))
+BINDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), 'bin'))
+sys.path += [LIBDIR, BINDIR]
 from saillib import Regatta
-from fixedtest import round1, round2, round3, round4, addRound
+# from fixedtest import Autumnal_2019 as series, addRound
+from fixedtest import FrostBite_2020 as series, addRound
 
 sRound = Regatta(roundDiscardsType='fixed', roundDiscardsNum=1,
                  seriesDiscardsType='fixed', seriesDiscardsNum=4)
-addRound(sRound, 'Round1', round1)
-addRound(sRound, 'Round2', round2)
-addRound(sRound, 'Round3', round3)
-addRound(sRound, 'Round4', round4)
+
+for roundName, round in series.items():
+    addRound(sRound, roundName, round)
+
+# import pickle, pprint
+
+# db = {
+#         'Autumnal Series': {
+#             'rounds': sRound.rounds,
+#             'roundsIdx': sRound.roundIdx
+#         }
+#     }
+
+# pprint.pprint(db)
+
+# with open('db.pickle', 'wb') as fh:
+#     pickle.dump(db, fh)
 
 app = Flask(__name__)
 CORS(app)
