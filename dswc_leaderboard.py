@@ -8,29 +8,39 @@ from flask_cors import CORS
 LIBDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), 'lib'))
 BINDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), 'bin'))
 sys.path += [LIBDIR, BINDIR]
-from saillib import Regatta
-# from fixedtest import Autumnal_2019 as series, addRound
-from fixedtest import FrostBite_2020 as series, addRound
+from saillib import Regatta, SeriesDB
 
-sRound = Regatta(roundDiscardsType='fixed', roundDiscardsNum=1,
+sRound = Regatta(name='Frostbite_2020', roundDiscardsType='fixed', roundDiscardsNum=1,
                  seriesDiscardsType='fixed', seriesDiscardsNum=4)
 
-for roundName, round in series.items():
-    addRound(sRound, roundName, round)
+# from fixedtest import allSeries, addRound
 
-# import pickle, pprint
+# # series = allSeries['Frostbite_2020']
+# # for roundName, round in series.items():
+# #     addRound(sRound, roundName, round)
 
-# db = {
-#         'Autumnal Series': {
+# def pickleData(allSeries):
+#     import pickle, pprint
+
+#     db = {}
+#     for seriesName, series in allSeries.items():
+#         sRound = Regatta(name=seriesName, roundDiscardsType='fixed', roundDiscardsNum=1,
+#                         seriesDiscardsType='fixed', seriesDiscardsNum=4)
+#         for roundName, round in series.items():
+#             addRound(sRound, roundName, round)
+
+#         db[seriesName] = {
 #             'rounds': sRound.rounds,
-#             'roundsIdx': sRound.roundIdx
+#             'roundIdx': sRound.roundIdx
 #         }
-#     }
+        
 
-# pprint.pprint(db)
+#     pprint.pprint(db)
 
-# with open('db.pickle', 'wb') as fh:
-#     pickle.dump(db, fh)
+#     with open('db.pickle', 'wb') as fh:
+#         pickle.dump(db, fh)
+
+# pickleData(allSeries)
 
 app = Flask(__name__)
 CORS(app)
@@ -82,20 +92,23 @@ def do500(e):
 def getRoundResult():
     seriesName = request.args.get('seriesName')
     roundName = request.args.get('roundName')
-    return jsonify(sRound.getRoundResults(roundName))
+    return jsonify(sRound.getRoundResults(seriesName, roundName))
 
 
 @app.route('/api/v1.0/getSeriesResult', methods=['GET'])
 def getSeriesResult():
     seriesName = request.args.get('seriesName')
-    return jsonify(sRound.getSeriesResults())
+    return jsonify(sRound.getSeriesResults(seriesName))
 
 
 @app.route('/api/v1.0/listRounds', methods=['GET'])
 def listRounds():
     seriesName = request.args.get('seriesName')
-    return jsonify(sRound.listRounds())
+    return jsonify(sRound.listRounds(seriesName))
 
+@app.route('/api/v1.0/listSeries', methods=['GET'])
+def listSeries():
+    return jsonify(SeriesDB().listSeries())
 
 if __name__ == '__main__':
     # app.debug = True

@@ -1,5 +1,5 @@
 body {
-    background: url("/static/clip_sailboat.png");
+    background: url(clip_sailboat.png);
     -moz-background-size: cover;
 	-webkit-background-size: cover;
 	background-size: cover;

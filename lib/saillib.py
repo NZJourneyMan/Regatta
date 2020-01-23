@@ -1,4 +1,36 @@
 from copy import deepcopy
+import pickle
+import os
+
+class PickleDB():
+    dbFile = 'db.pickle'
+
+    def __init__(self):
+        if os.path.isfile(self.dbFile):
+            self.db = self.readDB()
+        else:
+            self.db = {}
+
+    def readDB(self):
+        with open(self.dbFile, 'rb') as fd:
+            return pickle.load(fd)
+
+    def listSeries(self):
+        return list(self.db)
+
+    def getSeries(self, series):
+        return self.db[series]
+
+    def writeDB(self):
+        with open(self.dbFile, 'wb') as fd:
+            pickle.dump(self.db, fd)
+
+
+class PG_DB():
+    pass
+
+class SeriesDB(PickleDB):
+    pass
 
 
 class Regatta(object):
@@ -37,7 +69,7 @@ class Regatta(object):
     DISCARD_TYPES = ('fixed', 'keep', None)
     SUMMARY_TYPE = ('allraces', 'roundresults')
 
-    def __init__(self,
+    def __init__(self, name, 
                  roundDiscardsType, roundDiscardsNum,
                  seriesDiscardsType, seriesDiscardsNum,
                  overRideDNC=None):
@@ -46,13 +78,20 @@ class Regatta(object):
                 raise ValueError('Discard Type must be one of {}'
                                  .format(', '.join(self.DISCARD_TYPES)))
 
+        self.seriesName = name
         self.roundDiscardsType = roundDiscardsType
         self.roundDiscardsNum = roundDiscardsNum
         self.seriesDiscardsType = seriesDiscardsType
         self.seriesDiscardsNum = seriesDiscardsNum
         self.overRideDNC = overRideDNC
-        self.rounds = {}
-        self.roundIdx = {}
+        self.db = SeriesDB()
+        if name in self.db.listSeries():
+            rObj = self.db.getSeries(name)
+            self.rounds = rObj['rounds']
+            self.roundsIdx = rObj['roundIdx']
+        else:
+            self.rounds = {}
+            self.roundIdx = {}
 
     '''
     The next section of methods deals with the data at the series level
@@ -61,7 +100,8 @@ class Regatta(object):
     def getSeriesResults(self, summaryType='allRaces'):
         if len(self.rounds) == 1:
             return self.getRoundResults(list(self.rounds)[0])
-        summary = Regatta(roundDiscardsType=self.seriesDiscardsType,
+        summary = Regatta(name = 'Summary',
+                          roundDiscardsType=self.seriesDiscardsType,
                           roundDiscardsNum=self.seriesDiscardsNum,
                           seriesDiscardsType=None,
                           seriesDiscardsNum=0,

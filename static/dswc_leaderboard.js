@@ -1,6 +1,20 @@
 Vue.prototype.$http = 'axios'
 
-function mkDisplayData(obj, data) {
+var dataSource = "";
+
+/* If the api engine is not running locally, to do development on:
+
+       o templates/index.html
+       o static/dswc_leaderboar.js
+
+   use file:///..../dev.html in the browser, as it is symlinked to templates/index.html 
+   but the below code will switch the API source to Heroku */
+   
+if (window.location.href.search(/dev.html/) != -1) {
+    var dataSource = "https://dswcregatta.herokuapp.com";
+}
+
+function mkDisplayData(obj, data, summary=false) {
     var dData = [];
     var fields = [
         {'key': 'crew', stickyColumn: true},
@@ -49,7 +63,7 @@ var appAxios = new Vue({
     },
     mounted () {
         axios
-            .get('/api/v1.0/getSeriesResult?seriesName=bob')
+            .get(dataSource + '/api/v1.0/getSeriesResult?seriesName=Frostbite_2020')
             .then(response => (mkDisplayData(this, response.data)))
     }
 });
