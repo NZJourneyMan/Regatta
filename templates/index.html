@@ -24,60 +24,69 @@
 
   <body>
     <nav class="navbar navbar-light bg-light">
-      <div class="container">
-        <a class="navbar-brand" href="#">
-          <img
-            src="https://www.dswc.org/wp-content/uploads/2018/07/dswc_logo_small_x1.png"
-            width="30"
-            height="30"
-            class="d-inline-block align-top"
-            alt=""
-          />
-          DSWC <span class="lead">Regatta</span>
-        </a>
-      </div>
+      <a class="navbar-brand" href="#">
+        <img
+          src="https://www.dswc.org/wp-content/uploads/2018/07/dswc_logo_small_x1.png"
+          width="30"
+          height="30"
+          class="d-inline-block align-top"
+          alt=""
+        />
+        DSWC <span class="lead">Regatta</span>
+      </a>
     </nav>
 
-    <div class="container my-4">
-      <h2>Pick a series</h2>
-      <div id="allSeries">
-        <b-list-group>
-          <b-list-group-item
-            v-on:click="resultsPane.displaySeriesData(series)"
-            href="#"
-            v-for="series in seriesList"
-          >
-            {{ series.split('_')[0] }} {{ series.split('_')[1] }}
-          </b-list-group-item>
-        </b-list-group>
-      </div>
+    <div class="container-fluid my-4">
+      <div class="row">
+        <div class="col-lg-3">
+          <div class="mb-4">
+            <h2 class="lead">Pick a series</h2>
+            <div id="allSeries">
+              <b-list-group>
+                <b-list-group-item
+                  v-on:click="resultsPane.displaySeriesData(series)"
+                  href="#"
+                  v-for="series in seriesList"
+                >
+                  {{ series.split('_')[0] }} {{ series.split('_')[1] }}
+                </b-list-group-item>
+              </b-list-group>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-9">
+          <div id="resultsPane" v-show="showResults" class="mb-4">
+            <result-table
+              :title="summaryTitle"
+              :tabledata="summaryData"
+            ></result-table>
+            <!-- <div v-for="races in raceDays">
+                        <result-table :title="summaryTitle" :tabledata="summaryData"></result-table>
+                    </div> -->
+          </div>
 
-      <div class="my-4 text-center">
-        <p>
-          Legend: <span class="badge badge-info">Computed</span>
-          <span class="badge badge-warning">Missed / No data available</span>
-          <span class="badge badge-danger">Discarded</span>
-        </p>
-      </div>
-
-      <div id="resultsPane" v-if="showResults" class="my-4">
-        <result-table
-          :title="summaryTitle"
-          :tabledata="summaryData"
-        ></result-table>
-        <!-- <div v-for="races in raceDays">
-                <result-table :title="summaryTitle" :tabledata="summaryData"></result-table>
-            </div> -->
-      </div>
-
-      <div class="my-4">
-        <h3>Questions &amp; Comments</h3>
-        <p>
-          If data for your race is missing or you think there's a mistake please
-          let us know on the DSWC WhatsApp group!
-        </p>
+          <div class="mb-4">
+            Legend: <span class="badge badge-info">Computed</span>
+            <span class="badge badge-warning">Missed / No data available</span>
+            <span class="badge badge-danger">Discarded</span>
+          </div>
+          <div class="mb-4">
+            <p class="lead">Questions &amp; Comments</p>
+            <p>
+              If data for your race is missing or you think there's a mistake
+              please let us know on the DSWC WhatsApp group!
+            </p>
+          </div>
+        </div>
       </div>
     </div>
+
+    <nav class="navbar fixed-bottom navbar-light bg-light">
+      <small class="text-muted"
+        >Copyright ® All rights reserved | Made with 💙⛵️from London by salty
+        dogs Mark, Albert &amp; DSWC sailors.</small
+      >
+    </nav>
 
     <!-- <h1>Rounds</h1>
         <h2>Round 1</h2> -->
