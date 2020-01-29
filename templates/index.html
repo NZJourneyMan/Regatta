@@ -25,11 +25,24 @@
     </head>
 
     <body>
-        <h1>Frostbite 2020</h1>
-        <h2>Leaderboard</h2>
-        <div id="summary">
-            <b-table responsive striped hover sticky-header=90vh :fields="fields" :items="items"></b-table>
+        <h1>DSWC Race Results</h1>
+        <h2>Series</h2>
+        <div id="allSeries">
+            <b-list-group>
+                <b-list-group-item v-on:click="resultsPane.displaySeriesData(series)" href="#" v-for="series in seriesList">
+                    {{ series }}
+                </b-list-group-item>
+            </b-list-group>
         </div>
+        
+        <p>&nbsp;</p>
+        <div id="resultsPane" v-if="showResults">
+            <result-table :title="summaryTitle" :tabledata="summaryData"></result-table>
+            <!-- <div v-for="races in raceDays">
+                <result-table :title="summaryTitle" :tabledata="summaryData"></result-table>
+            </div> -->
+        </div>
+        
         <!-- <h1>Rounds</h1>
         <h2>Round 1</h2> -->
         <script src="static/dswc_leaderboard.js"></script>

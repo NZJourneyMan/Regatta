@@ -1,5 +1,6 @@
 Vue.prototype.$http = 'axios'
 
+
 var dataSource = "";
 
 /* If the api engine is not running locally, to do development on:
@@ -11,10 +12,10 @@ var dataSource = "";
    but the below code will switch the API source to Heroku */
    
 if (window.location.href.search(/dev.html/) != -1) {
-    var dataSource = "https://dswcregatta.herokuapp.com";
+    dataSource = "https://dswcregatta.herokuapp.com";
 }
 
-function mkDisplayData(obj, data, summary=false) {
+function mkDisplayData(obj, data) {
     var dData = [];
     var fields = [
         {'key': 'crew', stickyColumn: true},
@@ -48,23 +49,60 @@ function mkDisplayData(obj, data, summary=false) {
         }
         dData.push(dRec);
     }
-   obj.items = dData;
-   obj.fields = fields;
+   obj.summaryData.items = dData;
+   obj.summaryData.fields = fields;
 }
 
-var appAxios = new Vue({
-    el: '#summary',
-    data () {
-        return {
-            items: null,
-            /* fields: ['crew', 'place', 'boatNum', 'points', 'races'] */
-            fields: ['crew', 'place', 'boatNum', 'points', 'races']
-        };
+var allSeries = new Vue({
+    el: '#allSeries',
+    data: {
+        seriesList: []
     },
     mounted () {
         axios
-            .get(dataSource + '/api/v1.0/getSeriesResult?seriesName=Frostbite_2020')
-            .then(response => (mkDisplayData(this, response.data)))
+            .get(dataSource + '/api/v1.0/listSeries')
+            .then(response => (this.seriesList = response.data))
+    }
+});
+
+Vue.component('result-table', {
+    props: ['title', 'tabledata'],
+    template: `
+        <div class='result-table'>
+            <h3>{{ title }}</h3>
+            <b-table responsive striped hover sticky-header=90vh 
+                :fields="tabledata.fields" :items="tabledata.items">
+            </b-table>
+        </div>
+    `,
+});
+
+
+var resultsPane = new Vue({
+    el: '#resultsPane',
+    data: {
+        showResults: false,
+        summary: null,
+        raceDays: null,
+        summaryTitle: null,
+        summaryData: {
+            items: null,
+            fields: ['crew', 'place', 'boatNum', 'points', 'races'],
+        }
+    },
+    // mounted () {
+    //     axios
+    //         .get(dataSource + '/api/v1.0/getSeriesResult?seriesName=Frostbite_2020')
+    //         .then(response => mkDisplayData(this, response.data))
+    // },
+    methods: {
+        displaySeriesData: function(series) {
+            this.showResults = true;
+            this.summaryTitle = series;
+            axios
+                .get(dataSource + encodeURI('/api/v1.0/getSeriesResult?seriesName=' + series))
+                .then(response => mkDisplayData(this, response.data))
+        }
     }
 });
     

@@ -10,8 +10,9 @@ BINDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), 'bin'))
 sys.path += [LIBDIR, BINDIR]
 from saillib import Regatta, SeriesDB
 
-sRound = Regatta(name='Frostbite_2020', roundDiscardsType='fixed', roundDiscardsNum=1,
-                 seriesDiscardsType='fixed', seriesDiscardsNum=4)
+def getSeries(name):
+    return Regatta(name=name, roundDiscardsType='fixed', roundDiscardsNum=1,
+                   seriesDiscardsType='fixed', seriesDiscardsNum=4)
 
 # from fixedtest import allSeries, addRound
 
@@ -55,7 +56,8 @@ def favicon():
 # Index handling
 @app.route('/')
 def index():
-    return render_template('index.html')
+    # return render_template('index.html')
+    return send_from_directory(os.path.join(app.root_path, 'templates'), 'index.html')
 
 
 @app.route('/index', methods=['GET'])
@@ -92,19 +94,19 @@ def do500(e):
 def getRoundResult():
     seriesName = request.args.get('seriesName')
     roundName = request.args.get('roundName')
-    return jsonify(sRound.getRoundResults(seriesName, roundName))
+    return jsonify(getSeries(seriesName).getRoundResults(roundName))
 
 
 @app.route('/api/v1.0/getSeriesResult', methods=['GET'])
 def getSeriesResult():
     seriesName = request.args.get('seriesName')
-    return jsonify(sRound.getSeriesResults(seriesName))
+    return jsonify(getSeries(seriesName).getSeriesResults())
 
 
 @app.route('/api/v1.0/listRounds', methods=['GET'])
 def listRounds():
     seriesName = request.args.get('seriesName')
-    return jsonify(sRound.listRounds(seriesName))
+    return jsonify(getSeries(seriesName).listRounds())
 
 @app.route('/api/v1.0/listSeries', methods=['GET'])
 def listSeries():
