@@ -48,7 +48,7 @@ function mkDisplayData(obj, data) {
         dRec._cellVariants = { place: highlightResult };
 
         for (var r in result.races) {
-            var raceStr = 'R' + parseInt(r, 10) + 1;
+            var raceStr = 'R' + (parseInt(r) + 1);
             var fRec = {
                 key: raceStr,
                 class: 'text-center'
@@ -88,7 +88,7 @@ Vue.component('result-table', {
     props: ['title', 'tabledata'],
     template: `
         <div class='result-table'>
-            <h3>Results for <span class="text-primary">{{ title.split('_')[0] }} {{ title.split('_')[1] }}</span></h3>
+            <h3>Results for <span class="text-primary">{{ title.replace('_', ' ') }}</span></h3>
             <b-table responsive striped hover sticky-header=90vh 
                 :fields="tabledata.fields" :items="tabledata.items">
             </b-table>
