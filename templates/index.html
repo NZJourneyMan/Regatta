@@ -52,8 +52,7 @@
                                     href="#"
                                     v-for="series in seriesList"
                                 >
-                                    {{ series.split('_')[0] }} {{
-                                    series.split('_')[1] }}
+                                    {{ series.replace('_', ' ') }}
                                 </b-list-group-item>
                             </b-list-group>
                         </div>
