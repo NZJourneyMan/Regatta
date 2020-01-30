@@ -1,51 +1,114 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <meta charset="UTF-8">
+        <meta charset="UTF-8" />
         <title>DSWC Leaderboard</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no"
+        />
 
-        <link rel="stylesheet" type="text/css" href="static/leaderboard.css">
+        <!------------ CSS -------------->
+        <link
+            rel="stylesheet"
+            type="text/css"
+            href="static/leaderboard.css?v=1"
+        />
+        <link
+            type="text/css"
+            rel="stylesheet"
+            href="https://unpkg.com/bootstrap@4.4.1/dist/css/bootstrap.min.css"
+        />
+        <link
+            type="text/css"
+            rel="stylesheet"
+            href="https://unpkg.com/bootstrap-vue@2.3.0/dist/bootstrap-vue.min.css"
+        />
+    </head>
 
+    <body>
+        <nav class="navbar navbar-light bg-light">
+            <a class="navbar-brand" href="#">
+                <img
+                    src="https://www.dswc.org/wp-content/uploads/2018/07/dswc_logo_small_x1.png"
+                    width="30"
+                    height="30"
+                    class="d-inline-block align-top"
+                    alt=""
+                />
+                DSWC <span class="lead">Regatta</span>
+            </a>
+        </nav>
+
+        <div class="container-fluid my-4">
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="mb-4">
+                        <h2 class="lead">Pick a series</h2>
+                        <div id="allSeries">
+                            <b-list-group>
+                                <b-list-group-item
+                                    v-on:click="resultsPane.displaySeriesData(series)"
+                                    href="#"
+                                    v-for="series in seriesList"
+                                >
+                                    {{ series.replace('_', ' ') }}
+                                </b-list-group-item>
+                            </b-list-group>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-9">
+                    <div id="resultsPane" v-show="showResults" class="mb-4">
+                        <result-table
+                            :title="summaryTitle"
+                            :tabledata="summaryData"
+                        ></result-table>
+                        <!-- <div v-for="races in raceDays">
+                        <result-table :title="summaryTitle" :tabledata="summaryData"></result-table>
+                    </div> -->
+                    </div>
+
+                    <div class="mb-4">
+                        Legend: <span class="badge badge-info">Race results</span>
+                        <span class="badge badge-danger">Discard races</span>
+                        <span class="badge badge-warning">Computed from Dxx</span>
+                    </div>
+                    <div class="mb-4">
+                        <p class="lead">Questions &amp; Comments</p>
+                        <p>
+                            If race data is wrong or missing please let 
+                            us know on the DSWC WhatsApp group!
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <nav class="navbar fixed-bottom navbar-light bg-light">
+            <small class="text-muted"
+                >Copyright ® All rights reserved | Made with 💙⛵️from London by
+                salty dogs Mark, Albert &amp; DSWC sailors.</small
+            >
+        </nav>
+
+        <!-- <h1>Rounds</h1>
+        <h2>Round 1</h2> -->
+
+        <!------------ SCRIPTS -------------->
         <!-- development version, includes helpful console warnings -->
         <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
         <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
-        <!-- Load required Bootstrap and BootstrapVue CSS -->
-        <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css" />
-        <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.css" />
-
         <!-- Load polyfills to support older browsers -->
-        <script src="https://polyfill.io/v3/polyfill.min.js?features=es2015%2CIntersectionObserver" crossorigin="anonymous"></script>
+        <script
+            src="https://polyfill.io/v3/polyfill.min.js?features=es2015%2CIntersectionObserver"
+            crossorigin="anonymous"
+        ></script>
 
         <!-- Load Vue followed by BootstrapVue -->
         <script src="https://unpkg.com/vue@latest/dist/vue.min.js"></script>
         <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.js"></script>
-
-    </head>
-
-    <body>
-        <h1>DSWC Race Results</h1>
-        <h2>Series</h2>
-        <div id="allSeries">
-            <b-list-group>
-                <b-list-group-item v-on:click="resultsPane.displaySeriesData(series)" href="#" v-for="series in seriesList">
-                    {{ series }}
-                </b-list-group-item>
-            </b-list-group>
-        </div>
-        
-        <p>&nbsp;</p>
-        <div id="resultsPane" v-if="showResults">
-            <result-table :title="summaryTitle" :tabledata="summaryData"></result-table>
-            <!-- <div v-for="races in raceDays">
-                <result-table :title="summaryTitle" :tabledata="summaryData"></result-table>
-            </div> -->
-        </div>
-        
-        <!-- <h1>Rounds</h1>
-        <h2>Round 1</h2> -->
-        <script src="static/dswc_leaderboard.js"></script>
+        <script src="static/dswc_leaderboard.js?v=36"></script>
     </body>
 </html>
-
