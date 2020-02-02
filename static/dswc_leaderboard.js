@@ -59,8 +59,9 @@ function mkDisplayData(obj, data) {
 
             if (result.races[r].discard) {
                 dRec[raceStr] = '(' + dRec[raceStr] + ')';
-                dRec._cellVariants[raceStr] = 'danger';
-            } else if (result.races[r].flag) {
+                // dRec._cellVariants[raceStr] = 'danger';
+            };
+            if (result.races[r].flag) {
                 dRec._cellVariants[raceStr] = 'warning';
             } else {
                 dRec._cellVariants[raceStr] = 'info';

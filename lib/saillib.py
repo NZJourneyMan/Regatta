@@ -53,7 +53,7 @@ class Regatta(object):
                 }
             ]
     }
-    self.roundIdx = {
+    self.roundsIdx = {
         Round_Name: {
             (tuple of crew names): Array index in self.rounds
         }
@@ -88,10 +88,10 @@ class Regatta(object):
         if name in self.db.listSeries():
             rObj = self.db.getSeries(name)
             self.rounds = rObj['rounds']
-            self.roundsIdx = rObj['roundIdx']
+            self.roundsIdx = rObj['roundsIdx']
         else:
             self.rounds = {}
-            self.roundIdx = {}
+            self.roundsIdx = {}
 
     '''
     The next section of methods deals with the data at the series level
@@ -175,7 +175,7 @@ class Regatta(object):
                 'discard': False,
                 'raceNum': raceNum,  # Note that this will be one higher than the array index
                 }
-            self.rounds[roundName][ self.roundIdx[roundName][crew] ]['races'].append(raceRec)
+            self.rounds[roundName][ self.roundsIdx[roundName][crew] ]['races'].append(raceRec)
 
     def checkValidRace(self, roundName, results, allowDuplicates=False):
         '''
@@ -244,14 +244,14 @@ class Regatta(object):
 
     def addRound(self, boats, roundName):
         self.rounds[roundName] = []
-        self.roundIdx[roundName] = {}
+        self.roundsIdx[roundName] = {}
         for i, boat in enumerate(boats):
             self.rounds[roundName].append({
                 'crew': boat['crew'],
                 'boatNum': boat['boatNum'],
                 'races': [],
             })
-            self.roundIdx[roundName][boat['crew']] = i
+            self.roundsIdx[roundName][boat['crew']] = i
 
     def numRaces(self, roundName):
         roundResults = self.rounds[roundName]

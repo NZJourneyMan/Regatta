@@ -136,7 +136,28 @@ allSeries = {
             'boatNum': '5',
             },
         ],
-    }
+        'Round2': [
+            # 'Weather': 'Sunny W 8 - 25 kt'
+            # 'Date': '2020/02/02'
+            # 'Comment': ''
+            {'crew': ('Raquel', 'Soraia'),
+            'races': [4, 'DNF', 'DNS', 'DNS'],
+            'boatNum': '6',
+            },
+            {'crew': ('Kentaro', 'Clare'),
+            'races': [1, 2, 1, 2],
+            'boatNum':'18',
+            },
+            {'crew': ('Chris', 'Teemu'),
+            'races': [3, 3, 2, 3,],
+            'boatNum': '11',
+            },
+            {'crew': ('Mark', 'Ken'),
+            'races': [2, 1, 3, 1],
+            'boatNum': '22',
+            },
+        ],
+    },
 }
 
 
