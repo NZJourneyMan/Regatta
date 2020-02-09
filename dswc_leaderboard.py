@@ -14,35 +14,6 @@ def getSeries(name):
     return Regatta(name=name, roundDiscardsType='fixed', roundDiscardsNum=1,
                    seriesDiscardsType='fixed', seriesDiscardsNum=4)
 
-# from fixedtest import allSeries, addRound
-
-# # series = allSeries['Frostbite_2020']
-# # for roundName, round in series.items():
-# #     addRound(sRound, roundName, round)
-
-# def pickleData(allSeries):
-#     import pickle, pprint
-
-#     db = {}
-#     for seriesName, series in allSeries.items():
-#         sRound = Regatta(name=seriesName, roundDiscardsType='fixed', roundDiscardsNum=1,
-#                         seriesDiscardsType='fixed', seriesDiscardsNum=4)
-#         for roundName, round in series.items():
-#             addRound(sRound, roundName, round)
-
-#         db[seriesName] = {
-#             'rounds': sRound.rounds,
-#             'roundIdx': sRound.roundIdx
-#         }
-        
-
-#     pprint.pprint(db)
-
-#     with open('db.pickle', 'wb') as fh:
-#         pickle.dump(db, fh)
-
-# pickleData(allSeries)
-
 app = Flask(__name__)
 CORS(app)
 

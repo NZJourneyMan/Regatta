@@ -12,7 +12,7 @@
         <link
             rel="stylesheet"
             type="text/css"
-            href="static/leaderboard.css?v=2"
+            href="static/leaderboard.css?v=3"
         />
         <link
             type="text/css"
@@ -30,7 +30,7 @@
         <nav class="navbar navbar-light bg-light">
             <a class="navbar-brand" href="#">
                 <img
-                    src="https://www.dswc.org/wp-content/uploads/2018/07/dswc_logo_small_x1.png"
+                    src="static/dswc_logo_small_x1.png"
                     width="30"
                     height="30"
                     class="d-inline-block align-top"
@@ -60,19 +60,16 @@
                 </div>
                 <div class="col-lg-9">
                     <div id="resultsPane" v-show="showResults" class="mb-4">
-                        <result-table
-                            :title="summaryTitle"
-                            :tabledata="summaryData"
-                        ></result-table>
-                        <!-- <div v-for="races in raceDays">
-                        <result-table :title="summaryTitle" :tabledata="summaryData"></result-table>
-                    </div> -->
+                        <h2>Results for <span class="text-primary">{{ series }}</span></h2>
+                        <div v-for="races in raceDays" :key="len">
+                            <result-table :title="races.raceTitle" :tabledata="races.raceData"></result-table>
+                        </div>
                     </div>
 
                     <div class="mb-4">
                         Legend: <span class="badge badge-info">Race results</span>
                         <span class="badge badge-warning">Computed from Dxx</span>
-                        () = Discard races
+                        ()&nbsp;=&nbsp;Discarded races
                     </div>
                     <div class="mb-4">
                         <p class="lead">Questions &amp; Comments</p>
@@ -92,9 +89,6 @@
             >
         </nav>
 
-        <!-- <h1>Rounds</h1>
-        <h2>Round 1</h2> -->
-
         <!------------ SCRIPTS -------------->
         <!-- development version, includes helpful console warnings -->
         <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
@@ -109,6 +103,6 @@
         <!-- Load Vue followed by BootstrapVue -->
         <script src="https://unpkg.com/vue@latest/dist/vue.min.js"></script>
         <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.js"></script>
-        <script src="static/dswc_leaderboard.js?v=2"></script>
+        <script src="static/dswc_leaderboard.js?v=3"></script>
     </body>
 </html>
