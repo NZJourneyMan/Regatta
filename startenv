@@ -1,0 +1,15 @@
+#!/bin/bash
+
+source venv/bin/activate
+
+export DATABASE_URL=postgres:///regatta
+
+[ -f .localenv ] && source .localenv
+
+psql() {
+    /usr/bin/psql -d regatta "$@"
+}
+export -f psql
+
+ADDPS1='(dswc) ' bash
+

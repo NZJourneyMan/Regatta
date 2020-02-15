@@ -1,17 +1,22 @@
-from copy import deepcopy
-import pickle
+import sys
 import os
+import psycopg2
+import json
+import re
+
+from copy import deepcopy
 
 class PickleDB():
     dbFile = 'db.pickle'
 
     def __init__(self):
+        import pickle
         if os.path.isfile(self.dbFile):
-            self.db = self.readDB()
+            self.db = self._readDB()
         else:
             self.db = {}
 
-    def readDB(self):
+    def _readDB(self):
         with open(self.dbFile, 'rb') as fd:
             return pickle.load(fd)
 
@@ -21,15 +26,51 @@ class PickleDB():
     def getSeries(self, series):
         return self.db[series]
 
-    def writeDB(self):
-        with open(self.dbFile, 'wb') as fd:
-            pickle.dump(self.db, fd)
-
-
 class PG_DB():
-    pass
+    def __init__(self):
+        import psycopg2
+        dbConnStr = os.environ['DATABASE_URL']
+        self.conn = psycopg2.connect(dbConnStr)
+        self.conn.autocommit = True
+        self.cur = self.conn.cursor()
+        self._setupDB()
 
-class SeriesDB(PickleDB):
+    def _setupDB(self):
+        sql = """
+            CREATE TABLE IF NOT EXISTS series (
+                name TEXT PRIMARY KEY,
+                jdata JSONB
+        )"""
+        self.cur.execute(sql)
+
+    def listSeries(self):
+        sql = 'select name from series'
+        self.cur.execute(sql)
+        return [x[0] for x in self.cur.fetchall()]
+
+    def getSeries(self, series):
+        sql = 'select jdata from series where name = %s'
+        self.cur.execute(sql, (series,))
+        return self.cur.fetchone()[0]
+
+    def saveSeries(self, series, data):
+        '''
+        Method takes the series name and the data and writes it to the database
+        using UPSERT, it will either insert a new series, or update the existing
+        series
+        '''
+        sql = '''
+            insert INTO series (name, jdata) 
+            VALUES (%s, %s) 
+            ON CONFLICT (name) DO UPDATE SET jdata = EXCLUDED.jdata
+        '''
+        self.cur.execute(sql, (series, data))
+
+    def __del__self():
+        self.cur.close()
+        self.conn.close()
+
+class SeriesDB(PG_DB):
     pass
 
 
@@ -55,7 +96,7 @@ class Regatta(object):
     }
     self.roundsIdx = {
         Round_Name: {
-            (tuple of crew names): Array index in self.rounds
+            Comma seperated sting of crew names: Array index in self.rounds
         }
 
     }
@@ -175,7 +216,8 @@ class Regatta(object):
                 'discard': False,
                 'raceNum': raceNum,  # Note that this will be one higher than the array index
                 }
-            self.rounds[roundName][ self.roundsIdx[roundName][crew] ]['races'].append(raceRec)
+            crewStr = ','.join(crew)
+            self.rounds[roundName][ self.roundsIdx[roundName][crewStr] ]['races'].append(raceRec)
 
     def checkValidRace(self, roundName, results, allowDuplicates=False):
         '''
@@ -251,7 +293,8 @@ class Regatta(object):
                 'boatNum': boat['boatNum'],
                 'races': [],
             })
-            self.roundsIdx[roundName][boat['crew']] = i
+            crewStr = ','.join(boat['crew'])
+            self.roundsIdx[roundName][crewStr] = i
 
     def numRaces(self, roundName):
         roundResults = self.rounds[roundName]
@@ -354,7 +397,7 @@ class Regatta(object):
             if name != roundName and roundName != '_all_':
                 continue
             for boat in boats:
-                crews.add(boat['crew'])
+                crews.add(tuple(boat['crew']))
         return crews
 
     def getAllPeeps(self, roundName='_all_'):

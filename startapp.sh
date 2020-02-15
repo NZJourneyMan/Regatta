@@ -1,5 +1,4 @@
 #!/bin/bash
 
-source /home/mark/repos/dswc-results/venv/bin/activate
-export DATABASE_URL=bob
+echo "Using DB: $DATABASE_URL"
 gunicorn --reload --bind 0.0.0.0:5000 --access-logfile - --log-file - dswc_leaderboard:app

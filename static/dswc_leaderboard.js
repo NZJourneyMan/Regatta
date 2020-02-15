@@ -18,12 +18,14 @@ if (window.location.href.search(/dev.html/) != -1) {
 var allSeries = new Vue({
     el: '#allSeries',
     data: {
-        seriesList: []
+        seriesList: [],
     },
     mounted() {
         axios
             .get(dataSource + '/api/v1.0/listSeries')
-            .then(response => (this.seriesList = response.data));
+            .then(response => {
+                this.seriesList = response.data;
+            });
     }
 });
 

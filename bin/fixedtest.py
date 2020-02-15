@@ -8,8 +8,8 @@ sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../lib
 from saillib import Regatta
 
 allSeries = {
-    'Autumnal_2019': {
-        'Round1': [
+    'Autumnal 2019': {
+        'Round 1': [
             {'crew': ('Ken', 'Mark'),
             'races': [1, 2, 2, 1],
             'boatNum': '24',
@@ -31,7 +31,7 @@ allSeries = {
             'boatNum': '21',
             },
         ],
-        'Round2': [
+        'Round 2': [
             {'crew': ('Kentaro', 'Clare'),
             'races': [3, 2, 1, 1],
             'boatNum': '18',
@@ -46,7 +46,7 @@ allSeries = {
             },
             {'crew': ('Evan', 'Sean'),
             'races': [7, 4, 3, 2],
-            'boatNum': '18',
+            'boatNum': '22',
             },
             {'crew': ('Matt', 'Amanda G'),
             'races': [5, 5, 2, 4],
@@ -62,10 +62,10 @@ allSeries = {
             },
             {'crew': ('Andrew',),
             'races': [4, 6, 'DNS', 'DNS'],
-            'boatNum': 'Pico',
+            'boatNum': '14',
             },
         ],
-        'Round3': [
+        'Round 3': [
             {'crew': ('Kentaro', 'Clare'),
             'races': [2, 1, 2, 1],
             'boatNum': '18',
@@ -83,7 +83,7 @@ allSeries = {
             'boatNum': '22',
             },
         ],
-        'Round4': [
+        'Round 4': [
             {'crew': ('Kentaro', 'Clare'),
             'races': [4, 1, 1, 1],
             'boatNum': 'x',
@@ -110,8 +110,8 @@ allSeries = {
             },
         ]
     },
-    'Frostbite_2020': {
-        'Round1': [
+    'Frostbite 2020': {
+        'Round 1': [
             # 'Weather': 'Sunny NNW 3 - 12 kt'
             # 'Date': '2020/01/19'
             # 'Comment': ''
@@ -136,7 +136,7 @@ allSeries = {
             'boatNum': '5',
             },
         ],
-        'Round2': [
+        'Round 2': [
             # 'Weather': 'Sunny W 8 - 25 kt'
             # 'Date': '2020/02/02'
             # 'Comment': ''

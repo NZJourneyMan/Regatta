@@ -50,9 +50,8 @@
                                 <b-list-group-item
                                     v-on:click="resultsPane.displaySeriesData(series)"
                                     href="#"
-                                    v-for="series in seriesList"
-                                >
-                                    {{ series.replace('_', ' ') }}
+                                    v-for="series in seriesList">
+                                    {{ mkTitle(series) }}
                                 </b-list-group-item>
                             </b-list-group>
                         </div>
@@ -68,7 +67,7 @@
 
                     <div class="mb-4">
                         Legend: <span class="badge badge-info">Race results</span>
-                        <span class="badge badge-warning">Computed from Dxx</span>
+                        <span class="badge badge-warning">DNF, DNS, DSQ or DNC</span>
                         ()&nbsp;=&nbsp;Discarded races
                     </div>
                     <div class="mb-4">

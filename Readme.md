@@ -10,7 +10,7 @@
 
 ### Development, including the API backend
 
-Ensure python3 is available. At a guess greater than 3.4. In any case the venv module must be available.
+Ensure python3, venv and postgres are installed. At a guess greater than python 3.4 should do.
 
 Clone this repository `git clone git@github.com:NZJourneyMan/Regatta.git`
 
@@ -20,15 +20,19 @@ Create a python3 virtual environment
 
 `python3 -m venv venv/`
 
+Create the database
+
+`createdb regatta`
+
 Activate the virtual environment
 
-`source venv/bin/activate`
+`./startenv`
 
 Run `pip install -r requirements.txt`
 
 Start up the local API with:
 
-`gunicorn --reload --bind localhost:5000 --access-logfile - --log-file - dswc_leaderboard:app`
+`./startapp.sh`
 
 Browse to `http://localhost:5000`
 
