@@ -1,16 +1,16 @@
 import sys
 import os
-import psycopg2
 import json
 import re
 
 from copy import deepcopy
 
+
 class PickleDB():
     dbFile = 'db.pickle'
+    import pickle
 
     def __init__(self):
-        import pickle
         if os.path.isfile(self.dbFile):
             self.db = self._readDB()
         else:
@@ -26,7 +26,9 @@ class PickleDB():
     def getSeries(self, series):
         return self.db[series]
 
+
 class PG_DB():
+
     def __init__(self):
         import psycopg2
         dbConnStr = os.environ['DATABASE_URL']
@@ -40,6 +42,11 @@ class PG_DB():
             CREATE TABLE IF NOT EXISTS series (
                 name TEXT PRIMARY KEY,
                 jdata JSONB
+        )"""
+        self.cur.execute(sql)
+        sql = """
+            CREATE TABLE IF NOT EXISTS people (
+                name TEXT PRIMARY KEY
         )"""
         self.cur.execute(sql)
 
@@ -66,9 +73,23 @@ class PG_DB():
         '''
         self.cur.execute(sql, (series, data))
 
-    def __del__self():
+    def listUsers(self):
+        sql = 'select name from people order by name'
+        self.cur.execute(sql)
+        return [x[0] for x in self.cur.fetchall()]
+
+    def saveUser(self, user):
+        sql = '''
+            insert INTO people (name)
+            VALUES (%s) 
+            ON CONFLICT (name) DO NOTHING
+        '''
+        self.cur.execute(sql, (user,))
+
+    def __del__self(self):
         self.cur.close()
         self.conn.close()
+
 
 class SeriesDB(PG_DB):
     pass

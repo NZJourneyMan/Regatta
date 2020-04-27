@@ -24,9 +24,12 @@ def loadPG(allSeries):
 
     db = PG_DB()
     print(f'Using DB: {os.environ["DATABASE_URL"]}')
+
     for seriesName, series in allSeries.items():
+        # Create each series
         sRound = Regatta(name=seriesName, roundDiscardsType='fixed', roundDiscardsNum=1,
                         seriesDiscardsType='fixed', seriesDiscardsNum=4)
+        # Add each round to the DB
         for roundName, round in series.items():
             addRound(sRound, roundName, round)
 
@@ -37,7 +40,12 @@ def loadPG(allSeries):
             'roundsIdx': sRound.roundsIdx
         }))
 
-
+    # Extract the sailor names from the races and add them to the DB
+    for seriesName, series in allSeries.items():
+        for roundName, round in series.items():
+            for race in round:
+                for name in race['crew']:
+                    db.saveUser(name)
 
 loadPG(allSeries)
 

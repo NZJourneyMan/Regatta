@@ -103,6 +103,10 @@ def listRounds():
 def listSeries():
     return jsonify(SeriesDB().listSeries())
 
+@app.route('/api/v1.0/listUsers', methods=['GET'])
+def listUsers():
+    return jsonify(SeriesDB().listUsers())
+
 if __name__ == '__main__':
     # app.debug = True
     app.run()
