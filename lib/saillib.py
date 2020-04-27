@@ -131,7 +131,7 @@ class Regatta(object):
     DISCARD_TYPES = ('fixed', 'keep', None)
     SUMMARY_TYPE = ('allraces', 'roundresults')
 
-    def __init__(self, name, 
+    def __init__(self, name,
                  roundDiscardsType, roundDiscardsNum,
                  seriesDiscardsType, seriesDiscardsNum,
                  overRideDNC=None):
@@ -160,11 +160,12 @@ class Regatta(object):
     '''
 
     def getSeriesResults(self, summaryType='allRaces'):
+        discards = self.seriesDiscardsNum
         if len(self.rounds) == 1:
-            return self.getRoundResults(list(self.rounds)[0])
-        summary = Regatta(name = 'Summary',
+            discards = self.roundDiscardsNum
+        summary = Regatta(name='Summary',
                           roundDiscardsType=self.seriesDiscardsType,
-                          roundDiscardsNum=self.seriesDiscardsNum,
+                          roundDiscardsNum=discards,
                           seriesDiscardsType=None,
                           seriesDiscardsNum=0,
                           overRideDNC=self.maxSeriesPlaces())
@@ -177,7 +178,10 @@ class Regatta(object):
                     raceResult = raceResultsBase.copy()  # Default all races to DNC
                     for boat in self.getRoundResults(roundName):
                         for person in boat['crew']:
-                            raceResult[(person,)] = boat['races'][raceNum]['place']  # Get races that occurred
+                            # raceResult[(person,)] = boat['races'][raceNum]['place']  # Get races that occurred
+                            raceRec = boat['races'][raceNum].copy()  # Get races that occurred
+                            raceRec['discard'] = False
+                            raceResult[(person,)] = raceRec
                     summary.addRace('Summary', raceResult, checkRace=False)
             return summary.getRoundResults('Summary')
         else:
@@ -228,14 +232,17 @@ class Regatta(object):
                              .format(self.numBoats(roundName), len(results), list(results)))
         self.checkValidRace(roundName, results, allowDuplicates=not checkRace)
         raceNum = self.numRaces(roundName) + 1
-        for crew, place in results.items():
-            if not place:
-                place = 'DNS'
-            raceRec = {
-                'place': place if type(place) == int else None,
-                'flag': place.upper() if type(place) != int else None,
-                'discard': False,
-                'raceNum': raceNum,  # Note that this will be one higher than the array index
+        for crew, placeObj in results.items():
+            if type(placeObj) == dict:
+                raceRec = placeObj
+            else:
+                if not placeObj:
+                    placeObj = 'DNS'
+                raceRec = {
+                    'place': placeObj if type(placeObj) == int else None,
+                    'flag': placeObj.upper() if type(placeObj) != int else None,
+                    'discard': False,
+                    'raceNum': raceNum,  # Note that this will be one higher than the array index
                 }
             crewStr = ','.join(crew)
             self.rounds[roundName][ self.roundsIdx[roundName][crewStr] ]['races'].append(raceRec)
@@ -250,17 +257,29 @@ class Regatta(object):
         # Check unique, except for DNX
         noDNXPlace = []
         for crew, place in results.items():
-            if type(place) is int:
+            if type(place) is dict:
+                # Check race number bounds
+                placeNum = place['place']
+                if placeNum > self.numBoats(roundName) and not place['flag']:
+                    raise ValueError(f'Race place {placeNum} for crew {crew} may not be greater '
+                                     f'than the number of boats {self.numBoats(roundName)}')
+                if placeNum <= 0:
+                    raise ValueError(f'Race place {placeNum} for crew {crew} may not be less '
+                                     f'than one')
+                if placeNum in noDNXPlace and not allowDuplicates:
+                    raise ValueError(f'Race place {placeNum} for crew {crew} must be unique')
+                else:
+                    noDNXPlace.append(placeNum)
+
+            elif type(place) is int:
                 # Check race number bounds
                 if place > self.numBoats(roundName):
-                    raise ValueError('Race place {} for crew {} may not be greater than the number '
-                                     'of boats {}'.format(place, crew, self.numBoats(roundName)))
+                    raise ValueError(f'Race place {place} for crew {crew} may not be greater than '
+                                     f'the number of boats {self.numBoats(roundName)}')
                 if place <= 0:
-                    raise ValueError('Race place {} for crew {} may not be less than one'
-                                     .format(place, crew))
+                    raise ValueError(f'Race place {place} for crew {crew} may not be less than one')
                 if place in noDNXPlace and not allowDuplicates:
-                    raise ValueError('Race place {} for crew {} must be unique'
-                                     .format(place, crew))
+                    raise ValueError(f'Race place {place} for crew {crew} must be unique')
                 else:
                     noDNXPlace.append(place)
             elif type(place) is str or place is None:
@@ -270,13 +289,11 @@ class Regatta(object):
                 if not place:
                     place = 'DNS'
                 if str(place).upper() not in self.VALID_DNX:
-                    raise ValueError('Race place {} for crew {} in round {} must be a number or '
-                                     'one of {}'
-                                     .format(place, crew, roundName, self.VALID_DNX))
+                    raise ValueError(f'Race place {place} for crew {crew} in round {roundName} '
+                                     f'must be a number or one of {roundName}')
             else:  # No floats or other weird stuff please
-                raise ValueError('Race place {} for crew {} in round {} must be a number or '
-                                 'one of {}'
-                                 .format(place, crew, roundName, self.VALID_DNX))
+                raise ValueError(f'Race place {place} for crew {crew} in round {roundName} must be '
+                                 f'a number, a valid dict or one of {self.VALID_DNX}')
 
         # Check numeric race result values do not have gaps and start from 1.
         # Above we check for duplicates, so only need to check the sum is the same a 1+2+3+...n
@@ -358,10 +375,11 @@ class Regatta(object):
 
         for boat in self.rounds[roundName]:
             for race in boat['races']:
-                if not race['flag']:
-                    continue  # Assume that race['place'] has a valid value
-                elif race['flag'] in validDNX:
-                    if race['flag'] == 'DNC':
+                flag = race['flag']
+                if type(race['place']) is int:
+                    continue  # Assumes that any flag has already been converted to a value
+                elif flag in validDNX:
+                    if flag == 'DNC':
                         if self.overRideDNC:
                             race['place'] = self.overRideDNC
                         else:
@@ -369,11 +387,12 @@ class Regatta(object):
                     else:
                         race['place'] = self.maxRoundPlaces(roundName)
                 else:
-                    raise ValueError('DNx value {} in round {} race {} for crew {} is invalid'
-                                     .format(race['flag'],
-                                             roundName,
-                                             race['raceNum'],
-                                             boat['crew']))
+                    raise ValueError(f'Invalid combination of place {race["place"]} and '
+                                     f'flag {flag} in ' f'round "{roundName}" '
+                                     f'race {race["raceNum"]} for '
+                                     f'crew "{", ".join(boat["crew"])}".\n'
+                                     f'Place must be None or integer. Flag must be one of '
+                                     f'{", ".join(self.VALID_DNX)} or None')
 
     def maxCountBack(self, roundName):
         return self.maxSeriesPlaces() ** self.numRaces(roundName)
