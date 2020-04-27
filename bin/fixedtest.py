@@ -296,31 +296,54 @@ def addRound(roundObj, roundName, results):
 
 def main():
 
-    sRound = Regatta(roundDiscardsType='fixed', roundDiscardsNum=1,
-                     seriesDiscardsType='fixed', seriesDiscardsNum=4)
+    for seriesName, series in allSeries.items():
+        if seriesName != '2.6 Practice':
+            continue
 
-    addRound(sRound, 'Round1', round1)
-    print(' Round 1')
-#     print(json.dumps(sRound.getRoundResults('Round1'), indent=2))
-#     sys.exit()
-    doprint(sRound.getRoundResults('Round1'))
+        # Create each series
+        sRound = Regatta(name=seriesName, roundDiscardsType='fixed', roundDiscardsNum=1,
+                        seriesDiscardsType='fixed', seriesDiscardsNum=4)
+        # Add each round to the DB
+        for roundName, round in series.items():
+            addRound(sRound, roundName, round)
 
-    addRound(sRound, 'Round2', round2)
-    print('\n Round 2')
-    doprint(sRound.getRoundResults('Round2'))
+            print(f'\n {roundName}')
+            pprint(sRound.rounds)
+            pprint(sRound.roundsIdx)
 
-    addRound(sRound, 'Round3', round3)
-    print('\n Round 3')
-    doprint(sRound.getRoundResults('Round3'))
+        pprint(sRound.getSeriesResults())
+        # db.saveSeries(seriesName, json.dumps({
+        #     'rounds': sRound.rounds,
+        #     'roundsIdx': sRound.roundsIdx
+        # }))
 
-    addRound(sRound, 'Round4', round4)
-    print('\n Round 4')
-    doprint(sRound.getRoundResults('Round4'))
+#     # =======================================================
 
-    print('\n Series Results')  # (Interim after 3 rounds)')
-    doprint(sRound.getSeriesResults(), includeRaces=True)
-    print()
-    print('() = Discard, [] = DNx, ** = DNx & Discard')
+#     sRound = Regatta(name=name, roundDiscardsType='fixed', roundDiscardsNum=1,
+#                    seriesDiscardsType='fixed', seriesDiscardsNum=4)
+
+#     addRound(sRound, 'Round1', round1)
+#     print(' Round 1')
+# #     print(json.dumps(sRound.getRoundResults('Round1'), indent=2))
+# #     sys.exit()
+#     doprint(sRound.getRoundResults('Round1'))
+
+#     addRound(sRound, 'Round2', round2)
+#     print('\n Round 2')
+#     doprint(sRound.getRoundResults('Round2'))
+
+#     addRound(sRound, 'Round3', round3)
+#     print('\n Round 3')
+#     doprint(sRound.getRoundResults('Round3'))
+
+#     addRound(sRound, 'Round4', round4)
+#     print('\n Round 4')
+#     doprint(sRound.getRoundResults('Round4'))
+
+#     print('\n Series Results')  # (Interim after 3 rounds)')
+#     doprint(sRound.getSeriesResults(), includeRaces=True)
+#     print()
+#     print('() = Discard, [] = DNx, ** = DNx & Discard')
 
     '''
     Todo!
