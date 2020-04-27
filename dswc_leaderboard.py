@@ -2,6 +2,7 @@
 
 import sys
 import os
+import time
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory, jsonify
 from flask_cors import CORS
 
@@ -10,11 +11,30 @@ BINDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), 'bin'))
 sys.path += [LIBDIR, BINDIR]
 from saillib import Regatta, SeriesDB
 
+# Make Unixtime 
+# datetime.datetime.strptime("17/02/2020-13:00", "%d/%m/%Y-%H:%M").timestamp()
+#
+# Dark Sky URL
+# https://api.darksky.net/forecast/{key}/51.4934533,-0.0232652,1583067600?units=uk2
+
+class CustomFlask(Flask):
+    jinja_options = Flask.jinja_options.copy()
+    jinja_options.update(dict(
+        block_start_string='<%',
+        block_end_string='%>',
+        variable_start_string='%%',
+        variable_end_string='%%',
+        comment_start_string='<#',
+        comment_end_string='#>',
+    ))
+
+startTime = os.environ["START_TIME"]
+
 def getSeries(name):
     return Regatta(name=name, roundDiscardsType='fixed', roundDiscardsNum=1,
                    seriesDiscardsType='fixed', seriesDiscardsNum=4)
 
-app = Flask(__name__)
+app = CustomFlask(__name__)
 CORS(app)
 
 
@@ -27,8 +47,8 @@ def favicon():
 # Index handling
 @app.route('/')
 def index():
-    # return render_template('index.html')
-    return send_from_directory(os.path.join(app.root_path, 'templates'), 'index.html')
+    return render_template('index.html', startTime=startTime)
+    # return send_from_directory(os.path.join(app.root_path, 'templates'), 'index.html')
 
 
 @app.route('/index', methods=['GET'])
