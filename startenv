@@ -4,7 +4,7 @@ source venv/bin/activate
 
 export DATABASE_URL=postgres:///regatta
 
-[ -f .localenv ] && source .localenv
+[ -f .env ] && source .env
 
 psql() {
     /usr/bin/psql -d regatta "$@"

@@ -14,6 +14,17 @@ if (window.location.href.search(/dev.html/) != -1) {
     dataSource = 'https://dswcregatta.herokuapp.com';
 }
 
+var navbar = new Vue({
+    el: '#navbar',
+    data: {
+        loggedIn: false,
+    },
+    methods: {
+        doLogin() {
+            this.loggedIn = !this.loggedIn
+        }
+    }
+})
 
 var allSeries = new Vue({
     el: '#allSeries',
@@ -41,6 +52,7 @@ Vue.component('result-table', {
     `
 });
 
+
 function mkTitle(str) {
     return str.replace('_', ' ')
 }
@@ -60,7 +72,7 @@ var resultsPane = new Vue({
         }
     },
     methods: {
-        displaySeriesData: function(series) {
+        displaySeriesData(series) {
             this.showResults = true;
             this.series = mkTitle(series);
             this.raceDays = [];
@@ -113,7 +125,7 @@ var resultsPane = new Vue({
             if (!summary) {
                 fields.push( {'key': 'boatNum', class: 'text-center'} )
             };
-            for (var result of data) {
+            for (var result of data['boats']) {
                 var dRec = {};
                 if (!summary) {
                     dRec.boatNum = result.boatNum;

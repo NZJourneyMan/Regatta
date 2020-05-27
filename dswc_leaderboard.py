@@ -11,12 +11,6 @@ BINDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), 'bin'))
 sys.path += [LIBDIR, BINDIR]
 from saillib import Regatta, SeriesDB
 
-# Make Unixtime 
-# datetime.datetime.strptime("17/02/2020-13:00", "%d/%m/%Y-%H:%M").timestamp()
-#
-# Dark Sky URL
-# https://api.darksky.net/forecast/{key}/51.4934533,-0.0232652,1583067600?units=uk2
-
 class CustomFlask(Flask):
     jinja_options = Flask.jinja_options.copy()
     jinja_options.update(dict(
@@ -28,11 +22,14 @@ class CustomFlask(Flask):
         comment_end_string='#>',
     ))
 
-startTime = os.environ["START_TIME"]
+if "START_TIME" in os.environ:
+    startTime = os.environ["START_TIME"]
+else:
+    startTime = time.time()
+
 
 def getSeries(name):
-    return Regatta(name=name, roundDiscardsType='fixed', roundDiscardsNum=1,
-                   seriesDiscardsType='fixed', seriesDiscardsNum=4)
+    return Regatta(name)
 
 app = CustomFlask(__name__)
 CORS(app)
@@ -48,8 +45,10 @@ def favicon():
 @app.route('/')
 def index():
     return render_template('index.html', startTime=startTime)
-    # return send_from_directory(os.path.join(app.root_path, 'templates'), 'index.html')
 
+@app.route('/add_round')
+def add_round():
+    return render_template('add_round.html', startTime=startTime)
 
 @app.route('/index', methods=['GET'])
 def redirect_index():

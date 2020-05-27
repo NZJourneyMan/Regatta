@@ -27,18 +27,32 @@
     </head>
 
     <body>
-        <nav class="navbar navbar-light bg-light">
-            <a class="navbar-brand" href="#">
-                <img
-                    src="static/dswc_logo_small_x1.png"
-                    width="30"
-                    height="30"
-                    class="d-inline-block align-top"
-                    alt=""
-                />
-                DSWC <span class="lead">Regatta</span>
-            </a>
-        </nav>
+        <div id="navbar">
+          <b-navbar type="light" variant="light">
+              <b-navbar-brand href="#">
+                  <img
+                      src="static/dswc_logo_small_x1.png"
+                      width="30"
+                      height="30"
+                      class="d-inline-block align-top"
+                      alt=""
+                  />
+                  DSWC <span class="lead">Regatta</span>
+              </b-navbar-brand>
+               <b-collapse id="nav-collapse" is-nav>
+                  <b-navbar-nav class="ml-auto">
+                      <b-nav-item-dropdown right no-caret>
+                          <template v-slot:button-content>
+                              &#9776;
+                          </template>
+                          <b-dropdown-item href="#">Profile</b-dropdown-item>
+                          <b-dropdown-item href="#" v-if="loggedIn" v-on:click="doLogin()">Sign Out</b-dropdown-item>
+                          <b-dropdown-item href="#" v-if="!loggedIn" v-on:click="doLogin()">Login</b-dropdown-item>
+                      </b-nav-item-dropdown>
+                  </b-navbar-nav>
+              </b-collapse>
+          </b-navbar>
+        </div>
 
         <div class="container-fluid my-4">
             <div class="row">

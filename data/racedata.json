@@ -1,0 +1,935 @@
+[
+  {
+    "name": "Autumnal 2019",
+    "roundsdiscardtype": "fixed",
+    "roundsdiscardnum": 1,
+    "seriesdiscardtype": "fixed",
+    "seriesdiscardnum": 4,
+    "seriesstartdate": null,
+    "comment": null,
+    "rounds": [
+      {
+        "name": "Round 1",
+        "weather": null,
+        "rounddate": null,
+        "comment": null,
+        "boats": [
+          {
+            "crew": [
+              "Ken",
+              "Mark"
+            ],
+            "races": [
+              1,
+              2,
+              2,
+              1
+            ],
+            "boatNum": "24"
+          },
+          {
+            "crew": [
+              "Emilio",
+              "Clare"
+            ],
+            "races": [
+              2,
+              5,
+              1,
+              3
+            ],
+            "boatNum": "18"
+          },
+          {
+            "crew": [
+              "Evan",
+              "Lazlo"
+            ],
+            "races": [
+              4,
+              1,
+              4,
+              5
+            ],
+            "boatNum": "22"
+          },
+          {
+            "crew": [
+              "Saj",
+              "Chris"
+            ],
+            "races": [
+              3,
+              3,
+              3,
+              4
+            ],
+            "boatNum": "16"
+          },
+          {
+            "crew": [
+              "Anthony Dauppe"
+            ],
+            "races": [
+              null,
+              4,
+              5,
+              2
+            ],
+            "boatNum": "21"
+          }
+        ]
+      },
+      {
+        "name": "Round 2",
+        "weather": null,
+        "rounddate": null,
+        "comment": null,
+        "boats": [
+          {
+            "crew": [
+              "Kentaro",
+              "Clare"
+            ],
+            "races": [
+              3,
+              2,
+              1,
+              1
+            ],
+            "boatNum": "18"
+          },
+          {
+            "crew": [
+              "Ken",
+              "Mark"
+            ],
+            "races": [
+              1,
+              1,
+              4,
+              3
+            ],
+            "boatNum": "20"
+          },
+          {
+            "crew": [
+              "Emilio",
+              "Furold"
+            ],
+            "races": [
+              6,
+              7,
+              7,
+              6
+            ],
+            "boatNum": "4"
+          },
+          {
+            "crew": [
+              "Evan",
+              "Sean"
+            ],
+            "races": [
+              7,
+              4,
+              3,
+              2
+            ],
+            "boatNum": "22"
+          },
+          {
+            "crew": [
+              "Matt",
+              "Amanda G"
+            ],
+            "races": [
+              5,
+              5,
+              2,
+              4
+            ],
+            "boatNum": "17"
+          },
+          {
+            "crew": [
+              "Amanda C",
+              "Chris"
+            ],
+            "races": [
+              2,
+              3,
+              5,
+              7
+            ],
+            "boatNum": "15"
+          },
+          {
+            "crew": [
+              "Saj",
+              "Maria"
+            ],
+            "races": [
+              8,
+              8,
+              6,
+              5
+            ],
+            "boatNum": "16"
+          },
+          {
+            "crew": [
+              "Andrew"
+            ],
+            "races": [
+              4,
+              6,
+              null,
+              null
+            ],
+            "boatNum": "14"
+          }
+        ]
+      },
+      {
+        "name": "Round 3",
+        "weather": null,
+        "rounddate": null,
+        "comment": null,
+        "boats": [
+          {
+            "crew": [
+              "Kentaro",
+              "Clare"
+            ],
+            "races": [
+              2,
+              1,
+              2,
+              1
+            ],
+            "boatNum": "18"
+          },
+          {
+            "crew": [
+              "Albert"
+            ],
+            "races": [
+              4,
+              4,
+              4,
+              3
+            ],
+            "boatNum": "17"
+          },
+          {
+            "crew": [
+              "Ken",
+              "Mark"
+            ],
+            "races": [
+              1,
+              2,
+              1,
+              2
+            ],
+            "boatNum": "20"
+          },
+          {
+            "crew": [
+              "Saj",
+              "Amanda G"
+            ],
+            "races": [
+              3,
+              3,
+              3,
+              4
+            ],
+            "boatNum": "22"
+          }
+        ]
+      },
+      {
+        "name": "Round 4",
+        "weather": null,
+        "rounddate": null,
+        "comment": null,
+        "boats": [
+          {
+            "crew": [
+              "Kentaro",
+              "Clare"
+            ],
+            "races": [
+              4,
+              1,
+              1,
+              1
+            ],
+            "boatNum": "x"
+          },
+          {
+            "crew": [
+              "Ken",
+              "Mark"
+            ],
+            "races": [
+              2,
+              4,
+              4,
+              2
+            ],
+            "boatNum": "22"
+          },
+          {
+            "crew": [
+              "Saj",
+              "Stephan"
+            ],
+            "races": [
+              1,
+              5,
+              2,
+              5
+            ],
+            "boatNum": "x"
+          },
+          {
+            "crew": [
+              "Amanda G",
+              "Evan"
+            ],
+            "races": [
+              3,
+              2,
+              3,
+              3
+            ],
+            "boatNum": "x"
+          },
+          {
+            "crew": [
+              "Raquel",
+              "Soraia"
+            ],
+            "races": [
+              6,
+              3,
+              5,
+              6
+            ],
+            "boatNum": "x"
+          },
+          {
+            "crew": [
+              "Maria",
+              "Richard"
+            ],
+            "races": [
+              5,
+              6,
+              6,
+              4
+            ],
+            "boatNum": "x"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Frostbite 2020",
+    "roundsdiscardtype": "fixed",
+    "roundsdiscardnum": 1,
+    "seriesdiscardtype": "fixed",
+    "seriesdiscardnum": 4,
+    "seriesstartdate": "2020-01-19",
+    "comment": null,
+    "rounds": [
+      {
+        "name": "Round 1",
+        "weather": "Sunny NNW 3 - 12 kt",
+        "rounddate": "2020-01-19",
+        "comment": null,
+        "boats": [
+          {
+            "crew": [
+              "Clare",
+              "Maria"
+            ],
+            "races": [
+              2,
+              2,
+              2,
+              1
+            ],
+            "boatNum": "18"
+          },
+          {
+            "crew": [
+              "Lazlo",
+              "Evan"
+            ],
+            "races": [
+              5,
+              3,
+              3,
+              4
+            ],
+            "boatNum": "13"
+          },
+          {
+            "crew": [
+              "Teemu",
+              "Slava"
+            ],
+            "races": [
+              4,
+              4,
+              4,
+              3
+            ],
+            "boatNum": "20"
+          },
+          {
+            "crew": [
+              "Mark",
+              "Ken"
+            ],
+            "races": [
+              1,
+              1,
+              1,
+              2
+            ],
+            "boatNum": "10"
+          },
+          {
+            "crew": [
+              "Raquel",
+              "Soraia"
+            ],
+            "races": [
+              3,
+              5,
+              5,
+              5
+            ],
+            "boatNum": "5"
+          }
+        ]
+      },
+      {
+        "name": "Round 2",
+        "weather": "Sunny W 8 - 25 kt",
+        "rounddate": "2020-02-02",
+        "comment": null,
+        "boats": [
+          {
+            "crew": [
+              "Raquel",
+              "Soraia"
+            ],
+            "races": [
+              4,
+              null,
+              null,
+              null
+            ],
+            "boatNum": "6"
+          },
+          {
+            "crew": [
+              "Kentaro",
+              "Clare"
+            ],
+            "races": [
+              1,
+              2,
+              1,
+              2
+            ],
+            "boatNum": "18"
+          },
+          {
+            "crew": [
+              "Chris",
+              "Teemu"
+            ],
+            "races": [
+              3,
+              3,
+              2,
+              3
+            ],
+            "boatNum": "11"
+          },
+          {
+            "crew": [
+              "Mark",
+              "Ken"
+            ],
+            "races": [
+              2,
+              1,
+              3,
+              1
+            ],
+            "boatNum": "22"
+          }
+        ]
+      },
+      {
+        "name": "Round 3",
+        "weather": "Rainy WNW 12 - 30 kt",
+        "rounddate": "2020-01-17",
+        "comment": null,
+        "boats": [
+          {
+            "crew": [
+              "Alex",
+              "Emilio"
+            ],
+            "races": [
+              1,
+              1,
+              3,
+              1
+            ],
+            "boatNum": "22"
+          },
+          {
+            "crew": [
+              "Mark",
+              "Ken"
+            ],
+            "races": [
+              2,
+              2,
+              2,
+              2
+            ],
+            "boatNum": "20"
+          },
+          {
+            "crew": [
+              "Evan",
+              "Lazlo"
+            ],
+            "races": [
+              4,
+              4,
+              4,
+              3
+            ],
+            "boatNum": "13"
+          },
+          {
+            "crew": [
+              "Chris",
+              "Teemu"
+            ],
+            "races": [
+              3,
+              3,
+              1,
+              4
+            ],
+            "boatNum": "24"
+          }
+        ]
+      },
+      {
+        "name": "Round 4",
+        "weather": "Rainy WSW 15 - 25 kt",
+        "rounddate": "2020-03-01",
+        "comment": null,
+        "boats": [
+          {
+            "crew": [
+              "Clare",
+              "Emilio",
+              "Maria"
+            ],
+            "races": [
+              2,
+              3,
+              2,
+              3
+            ],
+            "boatNum": "21"
+          },
+          {
+            "crew": [
+              "Raquel",
+              "Soraia"
+            ],
+            "races": [
+              4,
+              4,
+              4,
+              4
+            ],
+            "boatNum": "8"
+          },
+          {
+            "crew": [
+              "Chris",
+              "Teemu"
+            ],
+            "races": [
+              3,
+              1,
+              3,
+              1
+            ],
+            "boatNum": "11"
+          },
+          {
+            "crew": [
+              "Ken",
+              "Mark"
+            ],
+            "races": [
+              1,
+              2,
+              1,
+              2
+            ],
+            "boatNum": "23"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "VR Twilight 2020 2.6 Series",
+    "roundsdiscardtype": "fixed",
+    "roundsdiscardnum": 1,
+    "seriesdiscardtype": "fixed",
+    "seriesdiscardnum": 4,
+    "seriesstartdate": "2020-04-29",
+    "comment": null,
+    "rounds": [
+      {
+        "name": "Round 1",
+        "weather": null,
+        "rounddate": "2020-04-29",
+        "comment": "Virtual Regatta",
+        "boats": [
+          {
+            "crew": [
+              "Topper 4 Days"
+            ],
+            "races": [
+              null,
+              5,
+              null,
+              null,
+              null
+            ],
+            "boatNum": null
+          },
+          {
+            "crew": [
+              "Tera-fying Sailor"
+            ],
+            "races": [
+              1,
+              7,
+              null,
+              null,
+              3
+            ],
+            "boatNum": null
+          },
+          {
+            "crew": [
+              "EatMyWake"
+            ],
+            "races": [
+              2,
+              4,
+              5,
+              4,
+              2
+            ],
+            "boatNum": null
+          },
+          {
+            "crew": [
+              "Lynxore"
+            ],
+            "races": [
+              6,
+              6,
+              3,
+              5,
+              1
+            ],
+            "boatNum": null
+          },
+          {
+            "crew": [
+              "NZJourneyMan"
+            ],
+            "races": [
+              5,
+              3,
+              1,
+              1,
+              7
+            ],
+            "boatNum": null
+          },
+          {
+            "crew": [
+              "Fluffy0069"
+            ],
+            "races": [
+              3,
+              1,
+              4,
+              3,
+              4
+            ],
+            "boatNum": null
+          },
+          {
+            "crew": [
+              "Albert"
+            ],
+            "races": [
+              4,
+              8,
+              null,
+              null,
+              5
+            ],
+            "boatNum": null
+          },
+          {
+            "crew": [
+              "Typically"
+            ],
+            "races": [
+              null,
+              2,
+              2,
+              2,
+              6
+            ],
+            "boatNum": null
+          }
+        ]
+      },
+      {
+        "name": "Round 2",
+        "weather": null,
+        "rounddate": "2020-05-13",
+        "comment": "Virtual Regatta",
+        "boats": [
+          {
+            "crew": ["NZJourneyMan"],
+            "races": [2,1,1,2,1,2],
+            "boatNum": null
+          },
+          {
+            "crew": ["Fluffy0069"],
+            "races": [1,2,"DNF",1,2,1],
+            "boatNum": null
+          },
+          {
+            "crew": ["shivermetimbers"],
+            "races": [3,3,2,3,3,3],
+            "boatNum": null
+          }
+        ]
+      },
+      {
+        "name": "Round 3",
+        "weather": null,
+        "rounddate": "2020-05-20",
+        "comment": "Virtual Regatta",
+        "boats": [
+            {"crew": ["NZJourneyMan"],
+            "races": ["DNF",1,3,2,1,1],
+            "boatNum": null
+            },
+            {"crew": ["Fluffy0069"],
+            "races": [1,2,2,1,2,2],
+            "boatNum": null
+            },
+            {"crew": ["Typically"],
+            "races": [2,3,1,"DNF",3,3],
+            "boatNum": null
+            }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "VR DSWC Spring Series 2020 Series",
+    "roundsdiscardtype": "fixed",
+    "roundsdiscardnum": 1,
+    "seriesdiscardtype": "fixed",
+    "seriesdiscardnum": 4,
+    "seriesstartdate": "2020-05-03",
+    "comment": "Virtual Regatta",
+    "rounds": [
+      {
+        "name": "Round 1",
+        "weather": null,
+        "rounddate": "2020-05-03",
+        "comment": "Virtual Regatta",
+        "boats": [
+          {
+            "crew": [
+              "Tera-fying Sailor"
+            ],
+            "races": [
+              1,
+              5,
+              5,
+              5
+            ],
+            "boatNum": null
+          },
+          {
+            "crew": [
+              "EatMyWake"
+            ],
+            "races": [
+              2,
+              3,
+              6,
+              null
+            ],
+            "boatNum": null
+          },
+          {
+            "crew": [
+              "Fluffy0069"
+            ],
+            "races": [
+              3,
+              null,
+              7,
+              3
+            ],
+            "boatNum": null
+          },
+          {
+            "crew": [
+              "NZJourneyMan"
+            ],
+            "races": [
+              4,
+              2,
+              3,
+              1
+            ],
+            "boatNum": null
+          },
+          {
+            "crew": [
+              "Typically"
+            ],
+            "races": [
+              5,
+              7,
+              2,
+              6
+            ],
+            "boatNum": null
+          },
+          {
+            "crew": [
+              "Lady B"
+            ],
+            "races": [
+              6,
+              4,
+              4,
+              4
+            ],
+            "boatNum": null
+          },
+          {
+            "crew": [
+              "Blackheath"
+            ],
+            "races": [
+              7,
+              6,
+              8,
+              null
+            ],
+            "boatNum": null
+          },
+          {
+            "crew": [
+              "Topper 4 Life"
+            ],
+            "races": [
+              null,
+              1,
+              1,
+              2
+            ],
+            "boatNum": null
+          }
+        ]
+      },
+      {
+        "name": "Round 2",
+        "weather": null,
+        "rounddate": null,
+        "comment": "Virtual Regatta",
+        "boats": [
+            {"crew": ["NZJourneyMan"],
+            "races":[2,6,5,1,6],
+            "boatNum": null
+            },
+            {"crew": ["Fluffy0069"],
+            "races": [6,5,3,4,1],
+            "boatNum": null
+            },
+            {"crew": ["Blackheath"],
+            "races": [7,10,8,8,8],
+            "boatNum":null
+            },
+            {"crew": ["Albert"],
+            "races": [5,3,6,7,2],
+            "boatNum": null
+            },
+            {"crew": ["Typically"],
+            "races": [8,8,7,5,5],
+            "boatNum": null
+            },
+            {"crew": ["EatMyWake"],
+            "races": [1,4,4,6,7],
+            "boatNum": null
+            },
+            {"crew": ["Tera-fying Sailor"],
+            "races": [3,2,1,3,3],
+            "boatNum": null
+            },
+            {"crew": ["Lynxore"],
+            "races": [4,1,2,2,4],
+            "boatNum": null
+            },
+            {"crew": ["Lady B"],
+            "races": ["DNS",7,"DNS","DNS","DNS"],
+            "boatNum": null
+            },
+            {"crew": ["Topper 4 Life"],
+            "races": ["DNS",9,"DNS","DNS","DNS"],
+            "boatNum": null
+            }
+        ]
+      }
+    ]
+  }
+]

@@ -18,7 +18,7 @@ class PickleDB():
 
     def _readDB(self):
         with open(self.dbFile, 'rb') as fd:
-            return pickle.load(fd)
+            return pickle.load(fd)  # pylint:disable=undefined-variable
 
     def listSeries(self):
         return list(self.db)
@@ -26,6 +26,8 @@ class PickleDB():
     def getSeries(self, series):
         return self.db[series]
 
+class DBError(Exception):
+    pass
 
 class PG_DB():
 
@@ -42,7 +44,11 @@ class PG_DB():
             CREATE TABLE IF NOT EXISTS series (
                 name TEXT PRIMARY KEY,
                 jdata JSONB
-        )"""
+            );
+            CREATE INDEX IF NOT EXISTS i_seriesStartDate ON series (
+                (jdata->'seriesStartDate')
+            )
+        """
         self.cur.execute(sql)
         sql = """
             CREATE TABLE IF NOT EXISTS people (
@@ -51,16 +57,19 @@ class PG_DB():
         self.cur.execute(sql)
 
     def listSeries(self):
-        sql = 'select name from series'
+        sql = "select name from series order by jdata->'seriesStartDate'"
         self.cur.execute(sql)
         return [x[0] for x in self.cur.fetchall()]
 
-    def getSeries(self, series):
+    def getSeries(self, seriesName):
         sql = 'select jdata from series where name = %s'
-        self.cur.execute(sql, (series,))
-        return self.cur.fetchone()[0]
+        self.cur.execute(sql, (seriesName,))
+        if self.cur.rowcount > 0:
+            return self.cur.fetchone()[0]
+        else:
+            raise DBError(f'Series "{seriesName}" not found')
 
-    def saveSeries(self, series, data):
+    def saveSeries(self, seriesName, data):
         '''
         Method takes the series name and the data and writes it to the database
         using UPSERT, it will either insert a new series, or update the existing
@@ -71,7 +80,7 @@ class PG_DB():
             VALUES (%s, %s) 
             ON CONFLICT (name) DO UPDATE SET jdata = EXCLUDED.jdata
         '''
-        self.cur.execute(sql, (series, data))
+        self.cur.execute(sql, (seriesName, data))
 
     def listUsers(self):
         sql = 'select name from people order by name'
@@ -82,7 +91,7 @@ class PG_DB():
         sql = '''
             insert INTO people (name)
             VALUES (%s) 
-            ON CONFLICT (name) DO NOTHING
+            ON CONFLICT (name) DO NOTHING  /* very passive aggressive */
         '''
         self.cur.execute(sql, (user,))
 
@@ -98,26 +107,29 @@ class SeriesDB(PG_DB):
 class Regatta(object):
     '''
     Data Structures:
-    self.rounds = {
-        Round_Name: 
-            [ array of dicts
-                { 
-                    'crew', (tuple of crew names),
-                    'boatNum', 'boatname/number string',
-                    'races': [array of race place records
-                        {
-                            'place': int,  # Should not be set in the DB if flag is used
-                            'flag' : string,  # including DNS, DNF, DSQ & DNC
-                            'discard': boolean,  # True if race was discarded. Not stored
-                            'raceNum': int
-                        }
-                    ]
-                }
+    self.rounds = {     FIXME!
+        [ lsit of dicts 
+            'name': round name string,
+            roundsdiscardtype: discard type for each round string
+            roundsdiscardnum: number of discards for each round
+            seriesdiscardtype: discard type for each series summarising
+            seriesdiscardnum: discard number for each series summarising
+            'boats': [ list of dicts
+                'crew', (tuple of crew names),
+                'boatNum', 'boatname/number string',
+                'races': [ list of race place records
+                    'place': int,  # Should not be set in the DB if flag is used
+                    'flag' : string,  # including DNS, DNF, DSQ & DNC
+                    'discard': boolean,  # True if race was discarded. Not stored
+                    'raceNum': int
+                ]
             ]
+        ]
     }
     self.roundsIdx = {
         Round_Name: {
-            Comma seperated sting of crew names: Array index in self.rounds
+            'idx': list index for self.rounds 
+            'crews': Comma seperated sting of crew names: list index in self.rounds['boats'] 
         }
 
     }
@@ -131,52 +143,103 @@ class Regatta(object):
     DISCARD_TYPES = ('fixed', 'keep', None)
     SUMMARY_TYPE = ('allraces', 'roundresults')
 
-    def __init__(self, name,
-                 roundDiscardsType, roundDiscardsNum,
-                 seriesDiscardsType, seriesDiscardsNum,
-                 overRideDNC=None):
-        if roundDiscardsType not in self.DISCARD_TYPES \
-            or seriesDiscardsType not in self.DISCARD_TYPES:
+    def __init__(self, name=None):
+        if name:
+            self.db = SeriesDB()
+            self.data = self.db.getSeries(name)
+
+    def addSeries(self, name,
+                  roundsDiscardType,
+                  roundsDiscardNum,
+                  seriesDiscardType,
+                  seriesDiscardNum,
+                  seriesStartDate,
+                  comment=None, 
+                  overRideDNC=None):
+        if roundsDiscardType not in self.DISCARD_TYPES \
+            or seriesDiscardType not in self.DISCARD_TYPES:
                 raise ValueError('Discard Type must be one of {}'
                                  .format(', '.join(self.DISCARD_TYPES)))
 
-        self.seriesName = name
-        self.roundDiscardsType = roundDiscardsType
-        self.roundDiscardsNum = roundDiscardsNum
-        self.seriesDiscardsType = seriesDiscardsType
-        self.seriesDiscardsNum = seriesDiscardsNum
-        self.overRideDNC = overRideDNC
-        self.db = SeriesDB()
-        if name in self.db.listSeries():
-            rObj = self.db.getSeries(name)
-            self.rounds = rObj['rounds']
-            self.roundsIdx = rObj['roundsIdx']
-        else:
-            self.rounds = {}
-            self.roundsIdx = {}
+        self.data = {
+            'seriesName': name,
+            'roundsDiscardType': roundsDiscardType,
+            'roundsDiscardNum': roundsDiscardNum,
+            'seriesDiscardType': seriesDiscardType,
+            'seriesDiscardNum': seriesDiscardNum,
+            'seriesStartDate': seriesStartDate,
+            'overRideDNC': overRideDNC,
+            'comment': comment,
+            'rounds': [],
+            'roundsIdx': {},
+        }
+
+    @property
+    def seriesName(self):
+        return self.data['seriesName']
+
+    @property
+    def roundsDiscardType(self):
+        return self.data['roundsDiscardType']
+
+    @property
+    def roundsDiscardNum(self):
+        return self.data['roundsDiscardNum']
+        
+    @property
+    def seriesDiscardType(self):
+        return self.data['seriesDiscardType']
+        
+    @property
+    def seriesDiscardNum(self):
+        return self.data['seriesDiscardNum']
+        
+    @property
+    def overRideDNC(self):
+        return self.data['overRideDNC']
+
+    @property
+    def comment(self):
+        return self.data['comment']
+        
+    @property
+    def rounds(self):
+        return self.data['rounds']
+        
+    @property
+    def roundsIdx(self):
+        return self.data['roundsIdx']
+        
+    @property
+    def seriesStartDate(self):
+        return self.data['seriesStartDate']
 
     '''
     The next section of methods deals with the data at the series level
     '''
 
     def getSeriesResults(self, summaryType='allRaces'):
-        discards = self.seriesDiscardsNum
+        discards = self.seriesDiscardNum
         if len(self.rounds) == 1:
-            discards = self.roundDiscardsNum
-        summary = Regatta(name='Summary',
-                          roundDiscardsType=self.seriesDiscardsType,
-                          roundDiscardsNum=discards,
-                          seriesDiscardsType=None,
-                          seriesDiscardsNum=0,
+            discards = self.roundsDiscardNum
+        summary = Regatta()
+        summary.addSeries(name='Summary',
+                          roundsDiscardType=self.seriesDiscardType,
+                          roundsDiscardNum=discards,
+                          seriesDiscardType=None,
+                          seriesDiscardNum=0,
+                          seriesStartDate=None,
                           overRideDNC=self.maxSeriesPlaces())
         if summaryType == 'allRaces':
             allPeeps = self.getAllPeeps()
             raceResultsBase = {person: 'DNC' for person in allPeeps}  # Initially set everyone to DNC
-            summary.addRound([{'crew': x, 'boatNum': None} for x in allPeeps], 'Summary')
-            for roundName in self.rounds:
+            summary.addRound('Summary', '', '', 'Leaderboard',
+                             [{'crew': x, 'boatNum': None} for x in allPeeps])
+            for round in self.rounds:
+                roundName = round['name']
                 for raceNum in range(self.numRaces(roundName)):
                     raceResult = raceResultsBase.copy()  # Default all races to DNC
-                    for boat in self.getRoundResults(roundName):
+                    for boat in self.getRoundResults(roundName)['boats']:
                         for person in boat['crew']:
                             # raceResult[(person,)] = boat['races'][raceNum]['place']  # Get races that occurred
                             raceRec = boat['races'][raceNum].copy()  # Get races that occurred
@@ -188,7 +251,7 @@ class Regatta(object):
             raise NotImplementedError('The summaryType {} not implemented yet'.format(summaryType))
 
     def numBoats(self, roundName):
-        return len(self.rounds[roundName])
+        return len(self._getRound(roundName)['boats'])
 
     def maxRoundPlaces(self, roundName):
         '''
@@ -202,13 +265,13 @@ class Regatta(object):
         This is the maximum number of boats in any round.
         '''
         maxBoats = 0
-        for _, res in self.rounds.items():
-            if len(res) > maxBoats:
-                maxBoats = len(res)
+        for round in self.rounds:
+            if len(round['boats']) > maxBoats:
+                maxBoats = len(round['boats'])
         return maxBoats + 1
 
     def listRounds(self):
-        return list(self.rounds)
+        return [round['name'] for round in self.rounds]
 
     '''
     The next section of methods use submitted race results that are passed as
@@ -244,8 +307,8 @@ class Regatta(object):
                     'discard': False,
                     'raceNum': raceNum,  # Note that this will be one higher than the array index
                 }
-            crewStr = ','.join(crew)
-            self.rounds[roundName][ self.roundsIdx[roundName][crewStr] ]['races'].append(raceRec)
+            boat = self._getBoat(roundName, crew)
+            boat['races'].append(raceRec)
 
     def checkValidRace(self, roundName, results, allowDuplicates=False):
         '''
@@ -322,21 +385,43 @@ class Regatta(object):
     The methods in the next section only use the roundName
     '''
 
-    def addRound(self, boats, roundName):
-        self.rounds[roundName] = []
-        self.roundsIdx[roundName] = {}
-        for i, boat in enumerate(boats):
-            self.rounds[roundName].append({
-                'crew': boat['crew'],
-                'boatNum': boat['boatNum'],
-                'races': [],
-            })
+    def addRoundAll(self, round):
+        boats = round['boats']
+        roundName = round['name']
+        self.addRound(roundName,
+                      round['weather'], 
+                      round['rounddate'], 
+                      round['comment'], 
+                      boats)
+
+        for i in range(len(boats[0]['races'])):
+            raceResults = {}
+            for boat in boats:
+                raceResults[tuple(boat['crew'])] = boat['races'][i]
+            self.addRace(roundName, raceResults, checkRace=True)
+
+    def addRound(self, roundName, weather, roundDate, comment, boats):
+        round = {
+            'name': roundName,
+            'weather': weather,
+            'rounddate': roundDate,
+            'comment': comment,
+            'boats': []
+        }
+        self.roundsIdx[roundName] = {
+            'idx': len(self.rounds)  # We can use len() because we have not appended the round blob yet
+        }
+        for i, boat in [(i, o.copy()) for i, o in enumerate(boats)]:
+            boat['races'] = []
+            round['boats'].append(boat)
             crewStr = ','.join(boat['crew'])
-            self.roundsIdx[roundName][crewStr] = i
+            self.roundsIdx[roundName][crewStr] = {'idx': i}
+        self.rounds.append(round)
 
     def numRaces(self, roundName):
-        roundResults = self.rounds[roundName]
-        return len(roundResults[0]['races'])  # The number of races for the first crew
+        round = self._getRound(roundName)
+        return len(round['boats'][0]['races'])  # The number of races for the first boat
+        ### TODO ### Need to add some validation somewhere that all boats have the same amount of races
 
     def setDiscardRaces(self, roundName):
         '''
@@ -345,19 +430,15 @@ class Regatta(object):
         This should be calculated every time results are requested and not be saved into the DB
         in case of race edits. 
         '''
-        if not self.roundDiscardsType:
+        if not self.roundsDiscardType:
             return
-        elif self.roundDiscardsType in ('fixed', 'keep'):
-            num = self.roundDiscardsNum
+        elif self.roundsDiscardType in ('fixed', 'keep'):
+            num = self.roundsDiscardNum
         else:
             raise NotImplementedError('The discard type {} is not implemented yet'
-                                      .format(self.roundDiscardsType))
-#         races = self.rounds
-#         for rec in sorted(races, key=lambda x: x['place'])[:num - 1]:
-#             rec['discard'] = True
-#         return [x for x in races if not x['discard']]
+                                      .format(self.roundsDiscardType))
 
-        for boat in self.rounds[roundName]:
+        for boat in self._getRound(roundName)['boats']:
             # Reverse sort by place and set the first "num" places to discard
             for rec in sorted(boat['races'], key=lambda x: x['place'], reverse=True)[:num]:
                 rec['discard'] = True
@@ -373,7 +454,7 @@ class Regatta(object):
         '''
         validDNX = self.VALID_DNX
 
-        for boat in self.rounds[roundName]:
+        for boat in self._getRound(roundName)['boats']:
             for race in boat['races']:
                 flag = race['flag']
                 if type(race['place']) is int:
@@ -401,7 +482,7 @@ class Regatta(object):
         maxCB = self.maxCountBack(roundName)
         self.setDNX(roundName)
         self.setDiscardRaces(roundName)
-        for boat in self.rounds[roundName]:
+        for boat in self._getRound(roundName)['boats']:
             loPoints, highPoints = self.calcPoints(roundName, boat['races'])
             # Create an overall score using a base of maxCB to ensure the different
             # values cannot interfere with each other.
@@ -412,7 +493,7 @@ class Regatta(object):
         self.sortPlaces(roundName)
         prevScore = 0
         prevPlace = 0
-        for i, boat in enumerate(self.rounds[roundName], start=1):
+        for i, boat in enumerate(self._getRound(roundName)['boats'], start=1):
             if boat['score'] == prevScore:
                 boat['place'] = prevPlace
             else:
@@ -421,22 +502,33 @@ class Regatta(object):
             prevScore = boat['score']
 
     def sortPlaces(self, roundName):
-        self.rounds[roundName].sort(key=lambda x: x['score'], reverse=True)
+        # self.rounds[roundName].sort(key=lambda x: x['score'], reverse=True)
+        boats = self._getRound(roundName)['boats']
+        boats.sort(key=lambda x: x['score'], reverse=True)
 
     def getRoundResults(self, roundName):
         '''
         Calculate the overall score and place for each crew across each race in the round
         Return an array reverse sorted by score
         '''
+        round = self._getRound(roundName)
         self.setScore(roundName)
-        return self.rounds[roundName]
+        return round
+
+    def _getRound(self, roundName):
+            return self.rounds[self.roundsIdx[roundName]['idx']]
+
+    def _getBoat(self, roundName, crew):
+            boats = self._getRound(roundName)['boats']
+            crewStr = ','.join(crew)
+            return boats[self.roundsIdx[roundName][crewStr]['idx']]
 
     def getAllCrews(self, roundName='_all_'):
         crews = set()
-        for name, boats in self.rounds.items():
-            if name != roundName and roundName != '_all_':
+        for round in self.rounds:
+            if round['name'] != roundName and roundName != '_all_':
                 continue
-            for boat in boats:
+            for boat in round['boats']:
                 crews.add(tuple(boat['crew']))
         return crews
 
