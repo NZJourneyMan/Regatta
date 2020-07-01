@@ -75,7 +75,12 @@
                     <div id="resultsPane" v-show="showResults" class="mb-4">
                         <h2>Results for <span class="text-primary">{{ series }}</span></h2>
                         <div v-for="races in raceDays" :key="len">
-                            <result-table :title="races.raceTitle" :tabledata="races.raceData"></result-table>
+                            <result-table 
+                                :title="races.raceTitle" 
+                                :date="races.date"
+                                :weather="races.weather"
+                                :tabledata="races.raceData"
+                            ></result-table>
                         </div>
                     </div>
 

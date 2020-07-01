@@ -41,10 +41,13 @@ var allSeries = new Vue({
 });
 
 Vue.component('result-table', {
-    props: ['title', 'tabledata'],
+    props: ['title', 'date', 'weather', 'tabledata'],
     template: `
         <div class='result-table'>
-            <h3><span class="text-primary">{{ title }}</span></h3>
+            <h3>
+                <span class="text-primary">{{ title }}</span>
+                <p style="font-size: 10pt;">{{ date }} {{ weather }}</p>
+            </h3>
             <b-table responsive striped hover sticky-header=90vh 
                 :fields="tabledata.fields" :items="tabledata.items">
             </b-table>
@@ -105,9 +108,21 @@ var resultsPane = new Vue({
                                         }
                                     )
                                     .then(response => {
+                                        var mydate = null;
+                                        if (response.data.weather) {
+                                            mydate = new Intl.DateTimeFormat(
+                                                'en-GB', { 
+                                                    weekday: 'short', 
+                                                    year: 'numeric', 
+                                                    month: 'short', 
+                                                    day: 'numeric'
+                                                }).format(new Date(response.data.rounddate))
+                                        }
                                         this.raceDays[parseInt(response.config.params.count) + 1] = {
                                             raceTitle: mkTitle(response.config.params.roundName),
                                             raceData: this.mkDisplayData(response.data),
+                                            weather: response.data.weather,
+                                            date: mydate,
                                         };
                                         this.len++;  // Force Vue to update
                                     });
