@@ -24,6 +24,7 @@ def loadPG(allSeries):
         # Create each series
         sRound = Regatta()
         sRound.addSeries(name=series['name'], 
+                         seriesSummaryType=series['seriessummarytype'],
                          roundsDiscardType=series['roundsdiscardtype'],
                          roundsDiscardNum=series['roundsdiscardnum'],
                          seriesDiscardType=series['seriesdiscardtype'],

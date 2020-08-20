@@ -110,6 +110,7 @@ class Regatta(object):
     self.rounds = {     FIXME!
         [ lsit of dicts 
             'name': round name string,
+            "seriessummarytype":  one of "allRaces" or "roundResults",
             roundsdiscardtype: discard type for each round string
             roundsdiscardnum: number of discards for each round
             seriesdiscardtype: discard type for each series summarising
@@ -140,7 +141,7 @@ class Regatta(object):
     '''
 
     VALID_DNX = ('DNS', 'DNF', 'DNC', 'DSQ')
-    DISCARD_TYPES = ('fixed', 'keep', None)
+    DISCARD_TYPES = ('discardWorst', 'keepBest', None)
     SUMMARY_TYPE = ('allraces', 'roundresults')
 
     def __init__(self, name=None):
@@ -149,6 +150,7 @@ class Regatta(object):
             self.data = self.db.getSeries(name)
 
     def addSeries(self, name,
+                  seriesSummaryType,
                   roundsDiscardType,
                   roundsDiscardNum,
                   seriesDiscardType,
@@ -163,6 +165,7 @@ class Regatta(object):
 
         self.data = {
             'seriesName': name,
+            'seriesSummaryType': seriesSummaryType,
             'roundsDiscardType': roundsDiscardType,
             'roundsDiscardNum': roundsDiscardNum,
             'seriesDiscardType': seriesDiscardType,
@@ -177,6 +180,10 @@ class Regatta(object):
     @property
     def seriesName(self):
         return self.data['seriesName']
+
+    @property
+    def seriesSummaryType(self):
+        return self.data['seriesSummaryType']
 
     @property
     def roundsDiscardType(self):
@@ -218,35 +225,52 @@ class Regatta(object):
     The next section of methods deals with the data at the series level
     '''
 
-    def getSeriesResults(self, summaryType='allRaces'):
+    def getSeriesResults(self):
         discards = self.seriesDiscardNum
         if len(self.rounds) == 1:
             discards = self.roundsDiscardNum
         summary = Regatta()
+        summaryType = self.seriesSummaryType
         summary.addSeries(name='Summary',
+                          seriesSummaryType=summaryType,
                           roundsDiscardType=self.seriesDiscardType,
                           roundsDiscardNum=discards,
                           seriesDiscardType=None,
                           seriesDiscardNum=0,
                           seriesStartDate=None,
                           overRideDNC=self.maxSeriesPlaces())
+        allPeeps = self.getAllPeeps()
+        raceResultsBase = {person: 'DNC' for person in allPeeps}  # Initially set everyone to DNC
+        summary.addRound('Summary', '', '', 'Leaderboard',
+                            [{'crew': x, 'boatNum': None} for x in allPeeps])
         if summaryType == 'allRaces':
-            allPeeps = self.getAllPeeps()
-            raceResultsBase = {person: 'DNC' for person in allPeeps}  # Initially set everyone to DNC
-            summary.addRound('Summary', '', '', 'Leaderboard',
-                             [{'crew': x, 'boatNum': None} for x in allPeeps])
             for round in self.rounds:
                 roundName = round['name']
                 for raceNum in range(self.numRaces(roundName)):
                     raceResult = raceResultsBase.copy()  # Default all races to DNC
                     for boat in self.getRoundResults(roundName)['boats']:
                         for person in boat['crew']:
-                            # raceResult[(person,)] = boat['races'][raceNum]['place']  # Get races that occurred
                             raceRec = boat['races'][raceNum].copy()  # Get races that occurred
                             raceRec['discard'] = False
                             raceResult[(person,)] = raceRec
                     summary.addRace('Summary', raceResult, checkRace=False)
             return summary.getRoundResults('Summary')
+        elif summaryType == 'roundResults':
+            for i, round in enumerate(self.rounds):
+                roundName = round['name']
+                raceResult = raceResultsBase.copy()  # Default all races to DNC
+                for boat in self.getRoundResults(roundName)['boats']:
+                    raceRec = {
+                        'place': boat['place'],
+                        'discard': False,
+                        'flag': False,
+                        'raceNum': i,
+                    }
+                    for person in boat['crew']:
+                        raceResult[(person,)] = raceRec
+                summary.addRace('Summary', raceResult, checkRace=False)
+            return summary.getRoundResults('Summary')
+                
         else:
             raise NotImplementedError('The summaryType {} not implemented yet'.format(summaryType))
 
@@ -430,18 +454,22 @@ class Regatta(object):
         This should be calculated every time results are requested and not be saved into the DB
         in case of race edits. 
         '''
+        num = self.roundsDiscardNum
         if not self.roundsDiscardType:
             return
-        elif self.roundsDiscardType in ('fixed', 'keep'):
-            num = self.roundsDiscardNum
+        elif self.roundsDiscardType == 'discardWorst':
+            for boat in self._getRound(roundName)['boats']:
+                # Reverse sort by place and set the first "num" places to discard
+                for rec in sorted(boat['races'], key=lambda x: x['place'], reverse=True)[:num]:
+                    rec['discard'] = True
+        elif self.roundsDiscardType == 'keepBest':
+            for boat in self._getRound(roundName)['boats']:
+                # Sort by place and set the last "num" places to discard
+                for rec in sorted(boat['races'], key=lambda x: x['place'])[num:]:
+                    rec['discard'] = True
         else:
             raise NotImplementedError('The discard type {} is not implemented yet'
                                       .format(self.roundsDiscardType))
-
-        for boat in self._getRound(roundName)['boats']:
-            # Reverse sort by place and set the first "num" places to discard
-            for rec in sorted(boat['races'], key=lambda x: x['place'], reverse=True)[:num]:
-                rec['discard'] = True
 
     def setDNX(self, roundName):
         '''
