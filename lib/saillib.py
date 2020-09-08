@@ -103,6 +103,8 @@ class PG_DB():
 class SeriesDB(PG_DB):
     pass
 
+class RegattaException(Exception):
+    pass
 
 class Regatta(object):
     '''

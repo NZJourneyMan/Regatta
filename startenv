@@ -2,8 +2,6 @@
 
 source venv/bin/activate
 
-export DATABASE_URL=postgres:///regatta
-
 [ -f .env ] && source .env
 
 psql() {

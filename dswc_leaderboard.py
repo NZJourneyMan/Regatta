@@ -3,13 +3,16 @@
 import sys
 import os
 import time
+import json
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory, jsonify
 from flask_cors import CORS
 
 LIBDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), 'lib'))
 BINDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), 'bin'))
 sys.path += [LIBDIR, BINDIR]
-from saillib import Regatta, SeriesDB
+from saillib import Regatta, SeriesDB, RegattaException, PG_DB
+
+ADMIN_PW = os.environ['ADMIN_PW']
 
 class CustomFlask(Flask):
     jinja_options = Flask.jinja_options.copy()
@@ -105,6 +108,33 @@ def listSeries():
 @app.route('/api/v1.0/listUsers', methods=['GET'])
 def listUsers():
     return jsonify(SeriesDB().listUsers())
+
+@app.route('/api/v1.0/addRound', methods=['POST'])
+def addRound():
+    seriesName = request.args.get('seriesName')
+    data = request.get_json()
+    if data['admin_pw'] != ADMIN_PW:
+        return jsonify({'status': False, 'message': 'Incorrect password'}), 401
+    msg = []
+    try:
+        db = PG_DB()
+        series = getSeries(seriesName)
+        toDel = []
+        for i, round in enumerate(series.data['rounds']):
+            if round['name'] == data['name']:
+                toDel.append(i)
+        for i in toDel:
+            msg.append(f'Deleting existing {series.data["rounds"][i]["name"]}')
+            del(series.data['rounds'][i])
+
+            
+        series.addRoundAll(data)
+        db.saveSeries(seriesName, json.dumps(series.data))
+    # except RegattaException as e:
+    except Exception as e:
+        return jsonify({'status': False, 'message': str(e)}), 400
+    else:
+        return jsonify({'status': True, 'message': '\n'.join(msg)})
 
 if __name__ == '__main__':
     # app.debug = True

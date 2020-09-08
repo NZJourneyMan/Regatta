@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Add round</title>
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no"
+        />
+
+        <!------------ CSS -------------->
+        <link
+            rel="stylesheet"
+            type="text/css"
+            href="static/leaderboard.css?v=%% startTime %%"
+        />
+        <link
+            type="text/css"
+            rel="stylesheet"
+            href="https://unpkg.com/bootstrap@4.4.1/dist/css/bootstrap.min.css"
+        />
+        <link
+            type="text/css"
+            rel="stylesheet"
+            href="https://unpkg.com/bootstrap-vue@2.3.0/dist/bootstrap-vue.min.css"
+        />
+    </head>
+
+    <body>
+        <div id="app">
+            <b-row>
+                <b-col md="auto">
+                    <label for="round">Series:</label> 
+                </b-col>
+                <b-col sm="1">
+                    <!-- <b-form-input id="roundName" col=8 size="sm" type="text" v-model="roundName"></b-form-input> -->
+                    <b-form-select size="sm" v-model=seriesName :options="seriesList" style="min-width:300px"/>
+                </b-col>
+            </b-row>
+            <b-row>
+                <b-col md="auto">
+                    <label for="round">Round:</label> 
+                </b-col>
+                <b-col sm="1">
+                    <b-form-input id="roundName" col=8 size="sm" type="text" v-model="roundName" style="min-width: 300px;"></b-form-input>
+                </b-col>
+            </b-row>
+            <b-row>
+                <b-col md="auto">
+                    <label for="round">Weather:</label> 
+                </b-col>
+                <b-col sm="1">
+                    <b-form-input id="weather" col=8 size="sm" type="text" v-model="weather" style="min-width: 300px;"></b-form-input>
+                </b-col>
+            </b-row>
+            <b-row>
+                <b-col md="auto">
+                    <label for="round">Round Date:</label> 
+                </b-col>
+                <b-col sm="1">
+                    <b-form-input id="roundDate" col=8 size="sm" type="date" v-model="roundDate" style="min-width: 200;"></b-form-input>
+                </b-col>
+            </b-row>
+            <b-row>
+                <b-col md="auto">
+                    <label for="round">Comment:</label> 
+                </b-col>
+                <b-col sm="1">
+                    <b-form-input id="comment" col=8 size="sm" type="text" v-model="comment" style="min-width: 300;"></b-form-input>
+                </b-col>
+            </b-row>
+            <b-row><br> </b-row>
+            <b-button size="sm" variant="success" @click="addBoat">Add Boat</b-button>
+            <b-button size="sm" variant="warning" @click="addRace">Add Race</b-button>
+            <b-button size="sm" variant="info" @click="addCrew">Add Crew</b-button>
+            <b-table striped hover :items="items" :fields="fields">
+                <template v-slot:cell(c1)="row">
+                    <b-form-select size="sm" v-model=row.item[row.field.key] :options="crewOptions" style="min-width:80px"/>
+                    <!-- <span @click="alert(row.item[row.field.key])">{{ row.item[row.field.key] }}</span> -->
+                </template>
+                <template v-slot:cell(c2)="row">
+                    <b-form-select size="sm" v-model="row.item[row.field.key]" :options="crewOptions" style="min-width:80px"/>
+                </template>
+                <template v-slot:cell(c3)="row">
+                    <b-form-select size="sm" v-model="row.item[row.field.key]" :options="crewOptions" style="min-width:80px"/>
+                </template>
+                <template v-slot:cell(c4)="row">
+                    <b-form-select size="sm" v-model="row.item[row.field.key]" :options="crewOptions" style="min-width:80px"/>
+                </template>
+                <template v-slot:cell(boat)="row">
+                    <b-form-input size="sm" style="max-width: 100px;" v-model="row.item[row.field.key]"/>
+                </template>
+                <template v-slot:cell()="row">
+                    <b-form-select size="sm" v-model="row.item[row.field.key]" :options="raceOptions" style="min-width:50px"/>
+                </template>
+            </b-table>
+            <b-row>
+                <b-col md="auto">
+                    <label for="pw">Password:</label> 
+                </b-col>
+                <b-col sm="1">
+                    <b-form-input id="pw" col=8 size="sm" type="password" v-model="password"></b-form-input>
+                </b-col>
+                <b-col sm="1">
+                    <b-button size="sm" @click="submit">Submit</b-button>
+                </b-col>
+            </b-row>
+            <b-row><br></b-row>
+            <b-row v-for="item in items">
+                {{ item }}
+            </b-row>
+            <b-row> {{ seriesName }} </b-row>
+            <b-row> {{ roundName }} </b-row>
+            <b-row> {{ weather }} </b-row>
+            <b-row> {{ roundDate }} </b-row>
+            <b-row> {{ comment }} </b-row>
+            <b-row> {{ password }} </b-row>
+            <b-row v-show="isSubmitted"> Submitted </b-row>
+        </div>
+        <style>
+            body {
+                padding: 1rem;
+            }
+        </style>
+
+
+
+        <!------------ SCRIPTS -------------->
+        <!-- development version, includes helpful console warnings -->
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+        <!-- Load polyfills to support older browsers -->
+        <script
+            src="https://polyfill.io/v3/polyfill.min.js?features=es2015%2CIntersectionObserver"
+            crossorigin="anonymous"
+        ></script>
+
+        <!-- Load Vue followed by BootstrapVue -->
+        <script src="https://unpkg.com/vue@latest/dist/vue.min.js"></script>
+        <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.js"></script>
+        <script src="static/add_round.js?v=%% startTime %%"></script>
+    </body>
+</html>
