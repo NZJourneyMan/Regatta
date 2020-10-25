@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Add Series</title>
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no"
+        />
+
+        <!------------ CSS -------------->
+        <link
+            rel="stylesheet"
+            type="text/css"
+            href="static/leaderboard.css?v=%% startTime %%"
+        />
+        <link
+            type="text/css"
+            rel="stylesheet"
+            href="https://unpkg.com/bootstrap@4.4.1/dist/css/bootstrap.min.css"
+        />
+        <link
+            type="text/css"
+            rel="stylesheet"
+            href="https://unpkg.com/bootstrap-vue@2.3.0/dist/bootstrap-vue.min.css"
+        />
+    </head>
+
+    <body>
+        <div id="app">
+            <b-row>
+                <b-col md="auto">
+                    <label for="seriesName">Series:</label> 
+                </b-col>
+                <b-col sm="1">
+                    <b-form-input id="seriesName" col=8 size="sm" type="text" v-model="seriesName" style="min-width: 300px;"></b-form-input>
+                </b-col>
+            </b-row>
+
+            <b-row>
+                <b-col md="auto">
+                    <label for="seriesSummType">Series Summary Type:</label> 
+                </b-col>
+                <b-col sm="1">
+                    <b-form-select id="seriesSummType" size="sm" v-model=seriesSummType :options="seriesSummTypes" style="min-width:300px"/>
+                </b-col>
+            </b-row>
+
+
+            <b-row>
+                <b-col md="auto">
+                    <label for="roundDiscardType">Round Discard Type:</label> 
+                </b-col>
+                <b-col sm="1">
+                    <b-form-select id="roundDiscardType" size="sm" v-model=roundDiscardType :options="roundDiscardTypes" style="min-width:300px"/>
+                </b-col>
+            </b-row>
+            <b-row>
+                <b-col md="auto">
+                    <label for="roundDiscardNum">Round Discard Num:</label> 
+                </b-col>
+                <b-col sm="1">
+                    <b-form-input id="roundDiscardNum" col=8 size="sm" type="number" v-model="roundDiscardNum" style="min-width: 300px;"></b-form-input>
+                </b-col>
+            </b-row>
+
+
+            <b-row>
+                <b-col md="auto">
+                    <label for="seriesDiscardType">Series Discard Type:</label> 
+                </b-col>
+                <b-col sm="1">
+                    <b-form-select id="seriesDiscardType" size="sm" v-model=seriesDiscardType :options="seriesDiscardTypes" style="min-width:300px"/>
+                </b-col>
+            </b-row>
+            <b-row>
+                <b-col md="auto">
+                    <label for="seriesDiscardNum">Series Discard Num:</label> 
+                </b-col>
+                <b-col sm="1">
+                    <b-form-input id="seriesDiscardNum" col=8 size="sm" type="number" v-model="seriesDiscardNum" style="min-width: 300px;"></b-form-input>
+                </b-col>
+            </b-row>
+
+
+            <b-row>
+                <b-col md="auto">
+                    <label for="seriesStartDate">Series Start Date:</label> 
+                </b-col>
+                <b-col sm="1">
+                    <b-form-input id="seriesStartDate" col=8 size="sm" type="date" v-model="seriesStartDate" style="min-width: 200;"></b-form-input>
+                </b-col>
+            </b-row>
+
+
+            <b-row>
+                <b-col md="auto">
+                    <label for="comment">Comment:</label> 
+                </b-col>
+                <b-col sm="1">
+                    <b-form-input id="comment" col=8 size="sm" type="text" v-model="comment" style="min-width: 300px;"></b-form-input>
+                </b-col>
+            </b-row>
+
+
+            <b-row>
+                <b-col md="auto">
+                    <label for="pw">Password:</label> 
+                </b-col>
+                <b-col sm="1">
+                    <b-form-input id="pw" col=8 size="sm" type="password" v-model="password"></b-form-input>
+                </b-col>
+                <b-col sm="1">
+                    <b-button size="sm" @click="submit">Submit</b-button>
+                </b-col>
+            </b-row>
+            <b-row><br></b-row>
+
+            <b-row> {{ seriesName }} </b-row>
+            <b-row> {{ seriesSummType }} </b-row>
+            <b-row> {{ roundDiscardType }} </b-row>
+            <b-row> {{ roundDiscardNum }} </b-row>
+            <b-row> {{ seriesDiscardType }} </b-row>
+            <b-row> {{ seriesDiscardNum }} </b-row>
+            <b-row> {{ comment }} </b-row>
+            <b-row> {{ password }} </b-row>
+            <b-row v-show="isSubmitted"> Submitted </b-row>
+        </div>
+        <style>
+            body {
+                padding: 1rem;
+            }
+        </style>
+
+
+
+        <!------------ SCRIPTS -------------->
+        <!-- development version, includes helpful console warnings -->
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+        <!-- Load polyfills to support older browsers -->
+        <script
+            src="https://polyfill.io/v3/polyfill.min.js?features=es2015%2CIntersectionObserver"
+            crossorigin="anonymous"
+        ></script>
+
+        <!-- Load Vue followed by BootstrapVue -->
+        <script src="https://unpkg.com/vue@latest/dist/vue.min.js"></script>
+        <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.js"></script>
+        <script src="static/add_series.js?v=%% startTime %%"></script>
+    </body>
+</html>

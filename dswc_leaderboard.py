@@ -53,6 +53,10 @@ def index():
 def add_round():
     return render_template('add_round.html', startTime=startTime)
 
+@app.route('/add_series')
+def add_series():
+    return render_template('add_series.html', startTime=startTime)
+
 @app.route('/index', methods=['GET'])
 def redirect_index():
     return redirect(url_for('index'))
@@ -130,6 +134,32 @@ def addRound():
             
         series.addRoundAll(data)
         db.saveSeries(seriesName, json.dumps(series.data))
+    # except RegattaException as e:
+    except Exception as e:
+        return jsonify({'status': False, 'message': str(e)}), 400
+    else:
+        return jsonify({'status': True, 'message': '\n'.join(msg)})
+
+@app.route('/api/v1.0/addSeries', methods=['POST'])
+def addSeries():
+    data = request.get_json()
+    if data['admin_pw'] != ADMIN_PW:
+        return jsonify({'status': False, 'message': 'Incorrect password'}), 401
+    series = Regatta()
+    msg = []
+    try:
+        series.addSeries(
+            data["seriesName"],
+            data["seriesSummType"],
+            data["roundDiscardType"],
+            int(data["roundDiscardNum"]),
+            data["seriesDiscardType"],
+            int(data["seriesDiscardNum"]),
+            data["seriesStartDate"],
+            data["comment"],
+        )
+        db = PG_DB()
+        db.saveSeries(data["seriesName"], json.dumps(series.data))
     # except RegattaException as e:
     except Exception as e:
         return jsonify({'status': False, 'message': str(e)}), 400

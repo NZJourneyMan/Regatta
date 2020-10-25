@@ -144,7 +144,7 @@ class Regatta(object):
 
     VALID_DNX = ('DNS', 'DNF', 'DNC', 'DSQ')
     DISCARD_TYPES = ('discardWorst', 'keepBest', None)
-    SUMMARY_TYPE = ('allraces', 'roundresults')
+    SUMMARY_TYPE = ('allRaces', 'roundResults')
 
     def __init__(self, name=None):
         if name:
