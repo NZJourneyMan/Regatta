@@ -83,7 +83,7 @@ class PG_DB():
         self.cur.execute(sql, (seriesName, data))
 
     def listUsers(self):
-        sql = 'select name from people order by name'
+        sql = 'select name from people order by upper(name)'
         self.cur.execute(sql)
         return [x[0] for x in self.cur.fetchall()]
 

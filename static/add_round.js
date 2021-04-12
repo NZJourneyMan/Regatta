@@ -15,7 +15,8 @@ var app = new Vue({
             roundDate: "",
             weather: "",
             comment: "",
-            isSubmitted: false,
+            newUser: "",
+            addUserMsg: "",
             seriesList: [],
             seriesName: "",
             crewOptions: [''],
@@ -92,6 +93,15 @@ var app = new Vue({
                 label: "",
                 key: "c" + this.numCrew,
             });
+        },
+        addUser() {
+            if (!this.crewOptions.includes(this.newUser)) {
+                this.crewOptions.push(this.newUser)
+                this.crewOptions.sort()
+                this.addUserMsg = this.newUser + " added"
+            } else {
+                this.addUserMsg = this.newUser + " already exists"
+            }
         },
         submit() {
             this.isSubmitted = !this.isSubmitted;

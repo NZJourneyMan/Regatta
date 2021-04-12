@@ -69,10 +69,24 @@
                     <b-form-input id="comment" col=8 size="sm" type="text" v-model="comment" style="min-width: 300;"></b-form-input>
                 </b-col>
             </b-row>
+            <b-row>
+                <b-col md="auto">
+                    <label for="round">New User:</label> 
+                </b-col>
+                <b-col sm="1">
+                    <b-form-input id="newUser" col=8 size="sm" type="text" v-model="newUser" style="min-width: 300;"></b-form-input>
+                </b-col>
+                <b-col sm="1">
+                    <b-button size="sm" variant="success" @click="addUser">Add</b-button>
+                </b-col>
+                <b-col md="auto">
+                    {{ addUserMsg }}
+                </b-col>
+            </b-row>
             <b-row><br> </b-row>
             <b-button size="sm" variant="success" @click="addBoat">Add Boat</b-button>
             <b-button size="sm" variant="warning" @click="addRace">Add Race</b-button>
-            <b-button size="sm" variant="info" @click="addCrew">Add Crew</b-button>
+            <b-button size="sm" variant="info" @click="addCrew">Add Crew to boat</b-button>
             <b-table striped hover :items="items" :fields="fields">
                 <template v-slot:cell(c1)="row">
                     <b-form-select size="sm" v-model=row.item[row.field.key] :options="crewOptions" style="min-width:80px"/>
@@ -115,7 +129,6 @@
             <b-row> {{ roundDate }} </b-row>
             <b-row> {{ comment }} </b-row>
             <b-row> {{ password }} </b-row>
-            <b-row v-show="isSubmitted"> Submitted </b-row>
         </div>
         <style>
             body {

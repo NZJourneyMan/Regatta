@@ -130,10 +130,15 @@ def addRound():
         for i in toDel:
             msg.append(f'Deleting existing {series.data["rounds"][i]["name"]}')
             del(series.data['rounds'][i])
-
             
         series.addRoundAll(data)
         db.saveSeries(seriesName, json.dumps(series.data))
+        currentCrewList = SeriesDB().listUsers()
+        # Save any new users
+        for boat in data['boats']:
+            for name in boat['crew']:
+                if name not in currentCrewList:
+                    db.saveUser(name)
     # except RegattaException as e:
     except Exception as e:
         return jsonify({'status': False, 'message': str(e)}), 400
