@@ -104,27 +104,33 @@ var app = new Vue({
             }
         },
         submit() {
-            this.isSubmitted = !this.isSubmitted;
             let boats = [];
             let boat = {};
-            for (let line of this.items) {
-                console.log(line)
-                let crew = [];
-                for (let i = 1; i <= this.numCrew; i++) {
-                    crew.push(line["c" + i]);
+            let validation = true
+            outer:
+                for (let line of this.items) {
+                    console.log(line)
+                    let crew = [];
+                    for (let i = 1; i <= this.numCrew; i++) {
+                        if ( i == 1 && !line["c" + i]) {
+                            alert("All boats must have at least 1 named crew menber");
+                            validation = false;
+                            break outer;
+                        }
+                        crew.push(line["c" + i]);
+                    }
+                    boatNum = line["boat"]
+                    let races = [];
+                    for (let i = 1; i <= this.numRaces; i++) {
+                        races.push(line["r" + i]);
+                    }
+                    boat = {
+                        "crew": crew,
+                        "races": races,
+                        "boatNum": boatNum
+                    }
+                    boats.push(boat);
                 }
-                boatNum = line["boat"]
-                let races = [];
-                for (let i = 1; i <= this.numRaces; i++) {
-                    races.push(line["r" + i]);
-                }
-                boat = {
-                    "crew": crew,
-                    "races": races,
-                    "boatNum": boatNum
-                }
-                boats.push(boat);
-            }
             this.data = {
                 "name": this.roundName,
                 "weather": this.weather,
@@ -134,14 +140,36 @@ var app = new Vue({
                 "admin_pw": this.password
             };
             console.log(this.data)
-            axios
-                .post(dataSource + encodeURI('/api/v1.0/addRound?seriesName=' + this.seriesName), this.data)
-                .then(response => {
-                    alert("Round added" + "\n" + response.data.message)
-                })
-                .catch(error => {
-                    alert(error + "\n" + error.response.data.message)
-                });
+            if (!this.seriesName){
+                validation = false
+                alert ("Please select a Series")
+            }
+            if (!this.roundName){
+                validation = false
+                alert ("Please add a Round Name")
+            }
+            if (!this.weather){
+                validation = false
+                alert ("Please add weather similar to the the form \"Showers SSW 6 - 20 kts\"")
+            }
+            if (!this.roundDate){
+                validation = false
+                alert ("Please select the Round Date")
+            }
+            if (!this.password){
+                validation = false
+                alert ("Please enter the password")
+            }
+            if (validation) {
+                axios
+                    .post(dataSource + encodeURI('/api/v1.0/addRound?seriesName=' + this.seriesName), this.data)
+                    .then(response => {
+                        alert("Round added" + "\n" + response.data.message)
+                    })
+                    .catch(error => {
+                        alert(error + "\n" + error.response.data.message)
+                    });
+            }
 
         },
     }
