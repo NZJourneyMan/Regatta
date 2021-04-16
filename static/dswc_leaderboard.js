@@ -41,12 +41,13 @@ var allSeries = new Vue({
 });
 
 Vue.component('result-table', {
-    props: ['title', 'date', 'weather', 'tabledata'],
+    props: ['title', 'date', 'weather', 'comment', 'tabledata'],
     template: `
         <div class='result-table'>
             <h3>
                 <span class="text-primary">{{ title }}</span>
                 <p style="font-size: 10pt;">{{ date }} {{ weather }}</p>
+                <p style="font-size: 10pt;">{{ comment }}</p>
             </h3>
             <b-table responsive striped hover sticky-header=90vh 
                 :fields="tabledata.fields" :items="tabledata.items">
@@ -122,6 +123,7 @@ var resultsPane = new Vue({
                                             raceTitle: mkTitle(response.config.params.roundName),
                                             raceData: this.mkDisplayData(response.data),
                                             weather: response.data.weather,
+                                            comment: response.data.comment,
                                             date: mydate,
                                         };
                                         this.len++;  // Force Vue to update

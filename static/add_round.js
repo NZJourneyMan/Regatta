@@ -150,7 +150,7 @@ var app = new Vue({
             }
             if (!this.weather){
                 validation = false
-                alert ("Please add weather similar to the the form \"Showers SSW 6 - 20 kts\"")
+                alert ("Please add weather similar to the form \"Showers SSW 6 - 20 kts\"")
             }
             if (!this.roundDate){
                 validation = false
