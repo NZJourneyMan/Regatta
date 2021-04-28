@@ -1,15 +1,31 @@
 #!/bin/bash
 
+ROOTDIR=$(dirname $0)
 source venv/bin/activate
 
-[ -f .env ] && source .env
+[ -f $ROOTDIR/.env ] && source $ROOTDIR/.env
 
 psql() {
     /usr/bin/psql -d regatta "$@"
 }
 export -f psql
 
-sudo pg_ctlcluster 12 main start
+usage() {
+    echo "Usage: $(basename $0): [-h] [command and arguments]"
+}
 
-ADDPS1='(dswc) ' bash
+if ! /usr/bin/psql -d regatta -c "select 'Ok'" &>/dev/null; then
+    echo "Starting Postgres with sudo. Use <Ctrl-C> to skip."
+    sudo pg_ctlcluster 12 main start
+fi
 
+if [ "$1" = -h ]; then
+    usage
+    exit 0
+fi
+
+if [ "$1" ]; then
+    "$@"
+else
+    ADDPS1='(dswc) ' bash
+fi
