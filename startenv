@@ -1,15 +1,28 @@
 #!/bin/bash
 
-source venv/bin/activate
+ROOTDIR=$(dirname $0)
+source $ROOTDIR/venv/bin/activate
 
-[ -f .env ] && source .env
+[ -f $ROOTDIR/.env ] && source $ROOTDIR/.env
+
+usage() {
+    echo "Usage: $(basename $0): [-h] [command and arguments]"
+}
 
 psql() {
     /usr/bin/psql -d regatta "$@"
 }
 export -f psql
 
+if [ "$1" = -h ]; then
+    usage
+    exit 0
+fi
+
 sudo pg_ctlcluster 12 main start
 
-ADDPS1='(dswc) ' bash
-
+if [ "$1" ]; then
+    "$@"
+else
+    bash --rcfile $ROOTDIR/env.bashrc
+fi
