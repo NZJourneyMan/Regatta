@@ -466,8 +466,8 @@ class Regatta(object):
                     rec['discard'] = True
         elif self.roundsDiscardType == 'keepBest':
             for boat in self._getRound(roundName)['boats']:
-                # Sort by place and set the last "num" places to discard
-                for rec in sorted(boat['races'], key=lambda x: x['place'])[num:]:
+                # Reverse sort by place and set the first "len - num" places to discard
+                for rec in sorted(boat['races'], key=lambda x: x['place'], reverse=True)[:len(boat['races'])-num]:
                     rec['discard'] = True
         else:
             raise NotImplementedError('The discard type {} is not implemented yet'
