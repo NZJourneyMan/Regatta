@@ -143,7 +143,7 @@ class Regatta(object):
     '''
 
     VALID_DNX = ('DNS', 'DNF', 'DNC', 'DSQ')
-    DISCARD_TYPES = ('discardWorst', 'keepBest', None)
+    DISCARD_TYPES = ('discardWorst', 'keepBest', 'discardWorst1inX', None)
     SUMMARY_TYPE = ('allRaces', 'roundResults')
 
     def __init__(self, name=None):
@@ -459,7 +459,9 @@ class Regatta(object):
         num = self.roundsDiscardNum
         if not self.roundsDiscardType:
             return
-        elif self.roundsDiscardType == 'discardWorst':
+        elif self.roundsDiscardType in ('discardWorst1inX', 'discardWorst'):
+            if self.roundsDiscardType == 'discardWorst1inX':
+                num = self.numRaces(roundName) // self.roundsDiscardNum
             for boat in self._getRound(roundName)['boats']:
                 # Reverse sort by place and set the first "num" places to discard
                 for rec in sorted(boat['races'], key=lambda x: x['place'], reverse=True)[:num]:
