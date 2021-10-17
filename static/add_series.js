@@ -3,8 +3,8 @@ if (window.location.href.search(/dev.html/) != -1) {
     dataSource = 'https://dswcregatta.herokuapp.com';
 }
 
-var app = new Vue({ 
-    el: '#app', 
+var app = new Vue({
+    el: '#app',
     data() {
         return {
             isSubmitted: false,
@@ -13,10 +13,10 @@ var app = new Vue({
             seriesSummType: "",
             seriesSummTypes: ["allRaces", "roundResults"],
             roundDiscardType: "",
-            roundDiscardTypes: ["discardWorst", "keepBest"],
+            roundDiscardTypes: ["discardWorst", "discardWorst1inX", "keepBest"],
             roundDiscardNum: "",
             seriesDiscardType: "",
-            seriesDiscardTypes: ["discardWorst", "keepBest"],
+            seriesDiscardTypes: ["discardWorst", "discardWorst1inX", "keepBest"],
             seriesDiscardNum: "",
             seriesStartDate: "",
             comment: ""
