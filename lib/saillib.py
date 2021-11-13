@@ -4,6 +4,7 @@ import json
 import re
 
 from copy import deepcopy
+from utils import mkcrewStr, mkCrewList
 
 
 class PickleDB():
@@ -85,7 +86,7 @@ class PG_DB():
     def listUsers(self):
         sql = 'select name from people order by upper(name)'
         self.cur.execute(sql)
-        return [x[0] for x in self.cur.fetchall()]
+        return mkCrewList([x[0] for x in self.cur.fetchall()])
 
     def saveUser(self, user):
         sql = '''
@@ -251,7 +252,7 @@ class Regatta(object):
                 for raceNum in range(self.numRaces(roundName)):
                     raceResult = raceResultsBase.copy()  # Default all races to DNC
                     for boat in self.getRoundResults(roundName)['boats']:
-                        for person in boat['crew']:
+                        for person in mkCrewList(boat['crew']):
                             raceRec = boat['races'][raceNum].copy()  # Get races that occurred
                             raceRec['discard'] = False
                             raceResult[(person,)] = raceRec
@@ -268,7 +269,7 @@ class Regatta(object):
                         'flag': False,
                         'raceNum': i,
                     }
-                    for person in boat['crew']:
+                    for person in mkCrewList(boat['crew']):
                         raceResult[(person,)] = raceRec
                 summary.addRace('Summary', raceResult, checkRace=False)
             return summary.getRoundResults('Summary')
@@ -423,7 +424,7 @@ class Regatta(object):
         for i in range(len(boats[0]['races'])):
             raceResults = {}
             for boat in boats:
-                raceResults[tuple(boat['crew'])] = boat['races'][i]
+                raceResults[tuple(mkCrewList(boat['crew']))] = boat['races'][i]
             self.addRace(roundName, raceResults, checkRace=True)
 
     def addRound(self, roundName, weather, roundDate, comment, boats):
@@ -440,7 +441,7 @@ class Regatta(object):
         for i, boat in [(i, o.copy()) for i, o in enumerate(boats)]:
             boat['races'] = []
             round['boats'].append(boat)
-            crewStr = ','.join(boat['crew'])
+            crewStr = mkcrewStr(boat['crew'])
             self.roundsIdx[roundName][crewStr] = {'idx': i}
         self.rounds.append(round)
 
@@ -552,7 +553,7 @@ class Regatta(object):
 
     def _getBoat(self, roundName, crew):
             boats = self._getRound(roundName)['boats']
-            crewStr = ','.join(crew)
+            crewStr = mkcrewStr(crew)
             return boats[self.roundsIdx[roundName][crewStr]['idx']]
 
     def getAllCrews(self, roundName='_all_'):
@@ -561,13 +562,13 @@ class Regatta(object):
             if round['name'] != roundName and roundName != '_all_':
                 continue
             for boat in round['boats']:
-                crews.add(tuple(boat['crew']))
+                crews.add(tuple(mkCrewList(boat['crew'])))
         return crews
 
     def getAllPeeps(self, roundName='_all_'):
         peeps = set()
         for crew in self.getAllCrews(roundName):
-            for person in crew:
+            for person in mkCrewList(crew):
                 peeps.add((person,))
         return peeps
 

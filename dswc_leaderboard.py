@@ -137,7 +137,7 @@ def addRound():
         # Save any new users
         for boat in data['boats']:
             for name in boat['crew']:
-                if name not in currentCrewList:
+                if name not in currentCrewList and name not in (None, ''):
                     db.saveUser(name)
     # except RegattaException as e:
     except Exception as e:
