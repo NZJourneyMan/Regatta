@@ -1,4 +1,11 @@
 #!/usr/bin/env python3
+'''
+DSWC sailing scoring app, focusing on the sailors, rather than the boats. This allows
+for teams to have different members, and for the results to focus on the members.
+
+'''
+# pylint: disable=C0114,C0115,C0116
+
 
 import sys
 import os
@@ -12,7 +19,13 @@ BINDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), 'bin'))
 sys.path += [LIBDIR, BINDIR]
 from saillib import Regatta, SeriesDB, RegattaException, PG_DB
 
-ADMIN_PW = os.environ['ADMIN_PW']
+if 'ADMIN_PW' in os.environ:
+    ADMIN_PW = os.environ['ADMIN_PW']
+else:
+    print('Environment variable "ADMIN_PW" missing. Quitting', file=sys.stderr)
+    sys.exit(1)
+
+START_TIME = os.environ['START_TIME'] if 'START_TIME' in os.environ else time.time()
 
 class CustomFlask(Flask):
     jinja_options = Flask.jinja_options.copy()
@@ -24,12 +37,6 @@ class CustomFlask(Flask):
         comment_start_string='<#',
         comment_end_string='#>',
     ))
-
-if "START_TIME" in os.environ:
-    startTime = os.environ["START_TIME"]
-else:
-    startTime = time.time()
-
 
 def getSeries(name):
     return Regatta(name)
@@ -47,15 +54,15 @@ def favicon():
 # Index handling
 @app.route('/')
 def index():
-    return render_template('index.html', startTime=startTime)
+    return render_template('index.html', startTime=START_TIME)
 
 @app.route('/add_round')
 def add_round():
-    return render_template('add_round.html', startTime=startTime)
+    return render_template('add_round.html', startTime=START_TIME)
 
 @app.route('/add_series')
 def add_series():
-    return render_template('add_series.html', startTime=startTime)
+    return render_template('add_series.html', startTime=START_TIME)
 
 @app.route('/index', methods=['GET'])
 def redirect_index():
