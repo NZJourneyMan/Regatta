@@ -259,7 +259,7 @@ class Regatta(object):
                     summary.addRace('Summary', raceResult, checkRace=False)
             return summary.getRoundResults('Summary')
         elif summaryType == 'roundResults':
-            for i, round in enumerate(self.rounds):
+            for roundNum, round in enumerate(self.rounds, 1):
                 roundName = round['name']
                 raceResult = raceResultsBase.copy()  # Default all races to DNC
                 for boat in self.getRoundResults(roundName)['boats']:
@@ -267,10 +267,10 @@ class Regatta(object):
                         'place': boat['place'],
                         'discard': False,
                         'flag': False,
-                        'raceNum': i,
+                        'raceNum': roundNum,
                     }
                     for person in mkCrewList(boat['crew']):
-                        raceResult[(person,)] = raceRec
+                        raceResult[(person,)] = raceRec.copy()
                 summary.addRace('Summary', raceResult, checkRace=False)
             return summary.getRoundResults('Summary')
                 
