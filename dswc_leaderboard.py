@@ -17,7 +17,7 @@ from flask_cors import CORS
 LIBDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), 'lib'))
 BINDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), 'bin'))
 sys.path += [LIBDIR, BINDIR]
-from saillib import Regatta, SeriesDB, RegattaException, PG_DB
+from saillib import Regatta, SeriesDB, RegattaException
 
 if 'ADMIN_PW' in os.environ:
     ADMIN_PW = os.environ['ADMIN_PW']
@@ -128,7 +128,7 @@ def addRound():
         return jsonify({'status': False, 'message': 'Incorrect password'}), 401
     msg = []
     try:
-        db = PG_DB()
+        db = SeriesDB()
         series = getSeries(seriesName)
         toDel = []
         for i, round in enumerate(series.data['rounds']):
@@ -170,8 +170,8 @@ def addSeries():
             data["seriesStartDate"],
             data["comment"],
         )
-        db = PG_DB()
-        db.saveSeries(data["seriesName"], json.dumps(series.data))
+        db = SeriesDB()
+        db.saveSeries(data["seriesName"], series.data)
     # except RegattaException as e:
     except Exception as e:
         return jsonify({'status': False, 'message': str(e)}), 400

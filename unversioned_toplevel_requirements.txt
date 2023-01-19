@@ -1,0 +1,6 @@
+Flask
+gunicorn
+google-cloud-datastore
+Flask-Cors
+firebase-admin
+Jinja2

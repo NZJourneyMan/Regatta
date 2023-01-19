@@ -1,0 +1,8 @@
+runtime: python310
+
+entrypoint: {{ entrypoint }}
+
+env_variables:
+    ADMIN_PW: {{ v['ADMIN_PW'] }}
+    SERIES_COLLECTION_NAME: {{ v['SERIES_COLLECTION_NAME'] }}
+    USERS_COLLECTION_NAME: {{ v['USERS_COLLECTION_NAME'] }}

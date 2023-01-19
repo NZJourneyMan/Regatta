@@ -1,6 +1,9 @@
 from copy import deepcopy
 from utils import mkcrewStr, mkCrewList
+from db import Firestore, PG_DB
 
+class SeriesDB(Firestore):
+# class SeriesDB(PG_DB):
     pass
 
 class RegattaException(Exception):
