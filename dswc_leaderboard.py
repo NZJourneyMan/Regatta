@@ -10,7 +10,6 @@ for teams to have different members, and for the results to focus on the members
 import sys
 import os
 import time
-import json
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory, jsonify
 from flask_cors import CORS
 
@@ -139,7 +138,7 @@ def addRound():
             del(series.data['rounds'][i])
             
         series.addRoundAll(data)
-        db.saveSeries(seriesName, json.dumps(series.data))
+        db.saveSeries(seriesName, series.data)
         currentCrewList = SeriesDB().listUsers()
         # Save any new users
         for boat in data['boats']:

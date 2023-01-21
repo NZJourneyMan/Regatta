@@ -349,7 +349,10 @@ class Regatta(object):
 
     def numRaces(self, roundName):
         round = self._getRound(roundName)
-        return len(round['boats'][0]['races'])  # The number of races for the first boat
+        if len(round['boats']) > 0:
+            return len(round['boats'][0]['races'])  # The number of races for the first boat
+        else:
+            return 0
         ### TODO ### Need to add some validation somewhere that all boats have the same amount of races
 
     def setDiscardRaces(self, roundName):
